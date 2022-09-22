@@ -39,7 +39,7 @@ public class DateUtils {
         return formatLocalDateTime(DEFAULT_TIME_FORMAT, LocalDateTime.now());
     }
 
-    public static void main(String[] args) {
-        System.out.println(LocalDateTime.now().format(DEFAULT_TIME_FORMAT));
-    }
+//    public static void main(String[] args) {
+//        System.out.println(LocalDateTime.now().format(DEFAULT_TIME_FORMAT));
+//    }
 }

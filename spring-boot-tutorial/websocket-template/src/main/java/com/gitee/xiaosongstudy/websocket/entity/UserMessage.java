@@ -29,7 +29,7 @@ public class UserMessage implements Serializable {
     /**
      * 消息编号
      */
-    private Integer messageId;
+    private Long messageId;
 
     /**
      * 是否已推送[0=否(默认)/1=是]

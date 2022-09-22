@@ -9,7 +9,7 @@ package com.gitee.xiaosongstudy.exception.core;
 public class UnAuthenticationException extends RuntimeException{
     private static final long serialVersionUID = -7674165291073195079L;
 
-    public UnAuthenticationException(String message) {
-        super(message);
+    public UnAuthenticationException() {
+        super(ResponseStatusEnum.UN_AUTHENTICATION.getDescription());
     }
 }

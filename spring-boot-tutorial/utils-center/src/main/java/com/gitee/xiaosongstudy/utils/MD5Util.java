@@ -65,8 +65,8 @@ public class MD5Util {
         return sb.toString();
     }
 
-    public static void main(String[] args) {
+   /* public static void main(String[] args) {
         String password = "64p8913h835p4e10rj02gj9nn0b14r4";
         System.out.println(removeSalt(password).equals(encode("1")));
-    }
+    }*/
 }

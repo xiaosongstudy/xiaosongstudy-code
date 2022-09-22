@@ -1,12 +1,14 @@
 package com.gitee.xiaosongstudy.websocket.api;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.gitee.xiaosongstudy.exception.core.BusinessParamException;
+import com.gitee.xiaosongstudy.exception.asserts.BusinessAssert;
 import com.gitee.xiaosongstudy.exception.core.Request;
 import com.gitee.xiaosongstudy.exception.core.Result;
 import com.gitee.xiaosongstudy.utils.MD5Util;
+import com.gitee.xiaosongstudy.websocket.entity.MessageStore;
 import com.gitee.xiaosongstudy.websocket.entity.User;
 import com.gitee.xiaosongstudy.websocket.service.UserService;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,18 +34,31 @@ public class WebSocketController {
 
     /**
      * 用户登录
+     *
      * @param request
-     * @return
+     * @return 处理结果
      */
     @PostMapping("/login")
     public Result login(@RequestBody Request request) {
         User user = JSON.parseObject(request.getData(), User.class);
+        BusinessAssert.notNull(user, "请求对象为空！");
         LambdaQueryWrapper<User> lambdaQueryWrapper = Wrappers.lambdaQuery(User.class).eq(User::getUsername, user.getUsername());
         User one = userService.getOne(lambdaQueryWrapper);
-        if (!MD5Util.removeSalt(one.getPassword()).equals(MD5Util.encode(user.getPassword()))) {
-            throw new BusinessParamException("用户名或者密码错误");
-        }
+        BusinessAssert.notNull(one, "用户名或者密码错误！");
+        BusinessAssert.eq(MD5Util.removeSalt(one.getPassword()), MD5Util.encode(user.getPassword()), "用户名或者密码错误！");
         one.setPassword(null);
         return Result.success(JSON.toJSONString(one));
+    }
+
+    /**
+     * 发送公告
+     *
+     * @param request 请求数据
+     * @return 处理结果
+     */
+    public Result publishAnnouncement(@RequestBody Request request) {
+        MessageStore messageStore = JSONObject.parseObject(request.getData(), MessageStore.class);
+        BusinessAssert.notNull(messageStore, "公告内容为空！");
+        return null;
     }
 }

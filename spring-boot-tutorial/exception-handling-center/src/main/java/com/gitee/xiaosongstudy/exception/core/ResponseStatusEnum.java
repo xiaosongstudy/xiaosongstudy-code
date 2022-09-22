@@ -1,6 +1,7 @@
 package com.gitee.xiaosongstudy.exception.core;
 
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
 /**
  * 响应状态枚举 .<br>
@@ -11,6 +12,7 @@ import lombok.Getter;
 @Getter
 public enum ResponseStatusEnum{
     // 其余常用状态可参考 org.springframework.http.HttpStatus
+    UN_AUTHENTICATION(HttpStatus.UNAUTHORIZED.value(), "认证失败！"),
     SUCCESS(10000, "业务处理成功！"),
     FAILURE(10001, "业务处理失败！"),
     PARAM_ERROR(10002, "业务参数错误！");
@@ -18,12 +20,12 @@ public enum ResponseStatusEnum{
     /**
      * 状态码
      */
-    private int code;
+    private final int code;
 
     /**
      * 描述
      */
-    private String description;
+    private final String description;
 
     ResponseStatusEnum(int code, String description) {
         this.code = code;

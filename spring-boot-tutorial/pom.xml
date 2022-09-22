@@ -47,8 +47,6 @@
         <groupId>cn.hutool</groupId>
         <artifactId>hutool-all</artifactId>
         <version>${hutool.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
       </dependency>
 
       <!-- fastjson工具 -->
