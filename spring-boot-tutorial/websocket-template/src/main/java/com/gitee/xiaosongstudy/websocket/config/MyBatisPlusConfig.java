@@ -1,4 +1,4 @@
-package com.gitee.xiaosongstudy.config;
+package com.gitee.xiaosongstudy.websocket.config;
 
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;

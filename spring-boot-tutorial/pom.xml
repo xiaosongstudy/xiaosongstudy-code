@@ -9,6 +9,8 @@
   <version>1.0.0</version>
   <modules>
     <module>websocket-template</module>
+      <module>exception-handling-center</module>
+    <module>utils-center</module>
   </modules>
   <packaging>pom</packaging>
 
@@ -24,6 +26,8 @@
     <fastjson.version>2.0.12</fastjson.version>
     <easyexcel.version>3.0.5</easyexcel.version>
     <mybatisplus.version>3.5.2</mybatisplus.version>
+    <utils.version>1.0.0</utils.version>
+    <exception.handler.version>1.0.0</exception.handler.version>
   </properties>
 
 
@@ -66,6 +70,19 @@
         <groupId>com.baomidou</groupId>
         <artifactId>mybatis-plus-boot-starter</artifactId>
         <version>${mybatisplus.version}</version>
+      </dependency>
+
+      <!-- 全局工具中心 -->
+      <dependency>
+        <groupId>com.gitee.xiaosongstudy</groupId>
+        <artifactId>utils-center</artifactId>
+        <version>${utils.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.gitee.xiaosongstudy</groupId>
+        <artifactId>exception-handling-center</artifactId>
+        <version>${exception.handler.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

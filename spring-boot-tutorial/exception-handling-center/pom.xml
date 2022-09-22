@@ -8,10 +8,12 @@
         <version>1.0.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>websocket-template</artifactId>
-    <name>websocket-template</name>
+
+    <artifactId>exception-handling-center</artifactId>
+    <version>1.0.0</version>
+    <name>exception-handling-center</name>
+    <description>全局异常处理中心</description>
     <packaging>jar</packaging>
-    <description>websocket应用案例合集</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -21,25 +23,16 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.gitee.xiaosongstudy</groupId>
-            <artifactId>exception-handling-center</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-websocket</artifactId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-        </dependency>
-        <!-- mybatis-plus配置 -->
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
         </dependency>
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
+            <groupId>com.gitee.xiaosongstudy</groupId>
+            <artifactId>utils-center</artifactId>
         </dependency>
     </dependencies>
 </project>

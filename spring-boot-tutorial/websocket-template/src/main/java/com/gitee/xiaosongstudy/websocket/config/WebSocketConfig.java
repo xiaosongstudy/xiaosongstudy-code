@@ -1,4 +1,4 @@
-package com.gitee.xiaosongstudy.config;
+package com.gitee.xiaosongstudy.websocket.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
