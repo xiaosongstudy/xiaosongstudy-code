@@ -26,7 +26,7 @@ public class RunnerManager implements CommandLineRunner {
     private SpringContextUtils springContextUtils;
 
     @Resource(name = "myTaskExecutor")
-    private TaskExecutor taskExecutor;
+    private TaskDispatcher taskDispatcher;
 
     @Override
     public void run(String... args) throws Exception {
@@ -39,7 +39,7 @@ public class RunnerManager implements CommandLineRunner {
                 if (task.async()) {
                     task.run();
                 } else {
-                    taskExecutor.execute(task::run);
+                    taskDispatcher.execute(task::run);
                 }
             });
         }

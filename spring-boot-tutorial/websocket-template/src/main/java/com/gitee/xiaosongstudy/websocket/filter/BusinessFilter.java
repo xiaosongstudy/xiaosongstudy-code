@@ -1,8 +1,11 @@
 package com.gitee.xiaosongstudy.websocket.filter;
 
+import com.alibaba.fastjson.JSON;
 import com.gitee.xiaosongstudy.exception.core.UnAuthenticationException;
 import com.gitee.xiaosongstudy.websocket.constant.Globals;
 import com.gitee.xiaosongstudy.websocket.container.StringContainer;
+import com.gitee.xiaosongstudy.websocket.core.RequestStore;
+import com.gitee.xiaosongstudy.websocket.vo.UserVo;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.core.annotation.Order;
 import org.springframework.util.StringUtils;
@@ -30,7 +33,14 @@ public class BusinessFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         String accessToken = request.getParameter(Globals.ACCESS_TOKEN);
         if (StringUtils.hasText(accessToken)) {
-            // TODO 如何处理token和用户id之间的关系
+            String userVoJson = stringContainer.getValue(Globals.TOKEN_CACHE_PREFIX + accessToken);
+            if (StringUtils.hasText(userVoJson)) {
+                UserVo userVo = JSON.parseObject(userVoJson, UserVo.class);
+                RequestStore.setLoginUser(userVo);
+                chain.doFilter(request,response);
+            } else {
+                throw new UnAuthenticationException();
+            }
         } else {
             throw new UnAuthenticationException();
         }

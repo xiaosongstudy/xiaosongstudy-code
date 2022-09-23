@@ -18,6 +18,7 @@ import java.util.Collection;
 public class SpringContextUtils implements ApplicationContextAware {
 
     private ApplicationContext applicationContext;
+
     @Override
     public void setApplicationContext(@NotNull ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
@@ -25,6 +26,7 @@ public class SpringContextUtils implements ApplicationContextAware {
 
     /**
      * 根据bean字节码获取对应的bean对象
+     *
      * @param clz 目标字节码
      * @return 目标bean
      */

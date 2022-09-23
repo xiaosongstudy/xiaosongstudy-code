@@ -14,9 +14,9 @@ import java.util.concurrent.*;
  */
 @Service("myTaskExecutor")
 @Slf4j
-public class TaskExecutor {
+public class TaskDispatcher {
 
-    public TaskExecutor() {
+    public TaskDispatcher() {
         log.info("线程任务工具类初始化完毕~");
     }
 
