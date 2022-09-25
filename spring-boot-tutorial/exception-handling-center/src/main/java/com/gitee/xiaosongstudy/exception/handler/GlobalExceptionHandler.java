@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
     public Result businessExceptionHandler(BusinessException businessException) {
         String errorMsg = getMessage(businessException);
         log.error(errorMsg);
-        return Result.failure(errorMsg);
+        return Result.failure(businessException.getMessage());
     }
 
     /**
@@ -47,7 +47,7 @@ public class GlobalExceptionHandler {
     public Result businessParamException(BusinessParamException businessParamException) {
         String errorMsg = getMessage(businessParamException);
         log.error(errorMsg);
-        return Result.failure(ResponseStatusEnum.PARAM_ERROR.getCode(), errorMsg);
+        return Result.failure(ResponseStatusEnum.PARAM_ERROR.getCode(), businessParamException.getMessage());
     }
 
     /**
@@ -60,7 +60,7 @@ public class GlobalExceptionHandler {
     public Result unAuthenticationExceptionHandler(UnAuthenticationException unAuthenticationException) {
         String errorMsg = getMessage(unAuthenticationException);
         log.error(errorMsg);
-        return Result.failure(HttpStatus.UNAUTHORIZED.value(), errorMsg);
+        return Result.failure(HttpStatus.UNAUTHORIZED.value(), unAuthenticationException.getMessage());
     }
 
     /**
@@ -72,7 +72,7 @@ public class GlobalExceptionHandler {
     public Result exceptionHandler(Exception e) {
         String errorMsg = getMessage(e);
         log.error(errorMsg);
-        return Result.failure(errorMsg);
+        return Result.failure(e.getMessage());
     }
 
     /**
