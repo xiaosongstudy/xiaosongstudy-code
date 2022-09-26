@@ -31,4 +31,9 @@ public class Globals {
      */
     public static final String TOKEN_CACHE_PREFIX = ":token:";
 
+    /**
+     * 登录接口
+     */
+    public static final String API_LOGIN = "/websocket/login";
+
 }

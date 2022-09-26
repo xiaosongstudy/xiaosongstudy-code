@@ -3,6 +3,7 @@ package com.gitee.xiaosongstudy.websocket;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.ServletComponentScan;
 
 /**
  * websocket案例核心启动类 .<br>
@@ -12,6 +13,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @SpringBootApplication(scanBasePackages="com.gitee.xiaosongstudy")
 @MapperScan("com.gitee.xiaosongstudy.websocket.mapper")
+@ServletComponentScan("com.gitee.xiaosongstudy")
 public class WebSocketTemplateApplication {
 
     public static void main(String[] args) {

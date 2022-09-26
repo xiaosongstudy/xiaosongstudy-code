@@ -4,6 +4,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.concurrent.TimeUnit;
 
 /**
  * string容器 <br/>
@@ -19,7 +20,8 @@ public class StringContainer {
 
     /**
      * 设置值
-     * @param key 缓存键
+     *
+     * @param key   缓存键
      * @param value 缓存值
      */
     public void setValue(String key, String value) {
@@ -27,7 +29,20 @@ public class StringContainer {
     }
 
     /**
+     * 设置 key的值同时设置过期时间
+     *
+     * @param key        缓存键
+     * @param value      缓存值
+     * @param expireTime 过期时间
+     * @param timeUnit   时间单位
+     */
+    public void setValue(String key, String value, long expireTime, TimeUnit timeUnit) {
+        stringRedisTemplate.opsForValue().set(getPrefix() + key, value, expireTime, timeUnit);
+    }
+
+    /**
      * 通过键获取值
+     *
      * @param key 键
      * @return 值
      */

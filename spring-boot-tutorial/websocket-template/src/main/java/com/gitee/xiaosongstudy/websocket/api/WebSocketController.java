@@ -25,6 +25,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.concurrent.TimeUnit;
 
 /**
  * websocket测试接口<br/>
@@ -67,14 +68,14 @@ public class WebSocketController {
         User one = userService.getOne(lambdaQueryWrapper);
         BusinessAssert.notNull(one, "用户名或者密码错误！");
         BusinessAssert.eq(MD5Util.removeSalt(one.getPassword()), MD5Util.encode(user.getPassword()), "用户名或者密码错误！");
-        one.setPassword(null);
         UserVo userVo = new UserVo();
         BeanUtils.copyProperties(user,userVo);
+        userVo.setPassword(null);
         // 生成token
         String accessToken = UUID.fastUUID().toString();
         userVo.setAccessToken(accessToken);
         // 将用户信息存入redis中
-        stringContainer.setValue(Globals.TOKEN_CACHE_PREFIX + accessToken,JSON.toJSONString(userVo));
+        stringContainer.setValue(Globals.TOKEN_CACHE_PREFIX + accessToken,JSON.toJSONString(userVo),30L, TimeUnit.MINUTES);
         return Result.success(JSON.toJSONString(userVo));
     }
 
