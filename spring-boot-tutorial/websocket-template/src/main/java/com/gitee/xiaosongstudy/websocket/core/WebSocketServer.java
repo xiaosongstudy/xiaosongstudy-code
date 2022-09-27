@@ -4,17 +4,17 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.gitee.xiaosongstudy.utils.ExceptionUtil;
 import com.gitee.xiaosongstudy.websocket.constant.Flag;
 import com.gitee.xiaosongstudy.websocket.entity.MessageStore;
 import com.gitee.xiaosongstudy.websocket.entity.UserMessage;
 import com.gitee.xiaosongstudy.websocket.service.UserMessageService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import javax.websocket.OnClose;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
+import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
@@ -30,7 +30,14 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 @ServerEndpoint("/client/{userId}")
 @Slf4j
+@EnableScheduling
 public class WebSocketServer {
+
+    /**
+     * 心跳配置
+     */
+    public static final String PING = "0x9";
+    public static final String PONG = "0xA";
 
     @Resource(type = UserMessageService.class)
     private UserMessageService userMessageService;
@@ -43,7 +50,7 @@ public class WebSocketServer {
      * @param userId
      */
     @OnOpen
-    public void open(@PathParam(("userId")) Long userId, Session session) {
+    public void open(@PathParam("userId") Long userId, Session session) {
         SESSION_MAP.put(userId, session);
     }
 
@@ -56,6 +63,32 @@ public class WebSocketServer {
     public void close(@PathParam("userId") Long userId) {
         SESSION_MAP.remove(userId);
     }
+
+    /**
+     * 监听消息
+     *
+     * @param message
+     */
+    @OnMessage
+    public void onMessage(String message, @PathParam("userId") Long userId) {
+        if (PING.equals(message)) {
+            log.info("收到来自于userId【{}】的心跳{}", userId, message);
+            sendMsg(userId,PONG);
+        }
+    }
+
+    /**
+     * 连接异常
+     *
+     * @param userId
+     * @param error
+     */
+    @OnError
+    public void onError(@PathParam("userId") Long userId, Throwable error) {
+        SESSION_MAP.remove(userId);
+        log.error("[当前异常类为：{}],具体异常原因为：{}", WebSocketServer.class.getSimpleName(), ExceptionUtil.getMessage(error));
+    }
+
 
     /**
      * 向指定客户端发送信息
@@ -71,12 +104,29 @@ public class WebSocketServer {
                 session.getBasicRemote().sendText(JSON.toJSONString(msg));
                 userMessage.setMessageId(msg.getId());
                 userMessage.setUserId(userId);
+                userMessage.setPushFlag(Flag.TRUE);
                 LambdaQueryWrapper<UserMessage> queryWrapper = Wrappers.lambdaQuery(UserMessage.class)
                         .eq(UserMessage::getMessageId, userMessage.getMessageId())
                         .eq(UserMessage::getUserId, userMessage.getUserId());
                 userMessageService.update(userMessage, queryWrapper);
             } catch (IOException e) {
                 log.error(WebSocketServer.class.getSimpleName(), e);
+            }
+        }
+    }
+
+    /**
+     * 给指定用户发送信息
+     * @param userId 用户编号
+     * @param message 用户信息
+     */
+    public void sendMsg(Long userId, String message) {
+        Session session = SESSION_MAP.get(userId);
+        if (null != session) {
+            try {
+                session.getBasicRemote().sendText(message);
+            } catch (IOException e) {
+                log.error("[当前异常类为：{}],具体异常原因为：{}", WebSocketServer.class.getSimpleName(), ExceptionUtil.getMessage(e));
             }
         }
     }

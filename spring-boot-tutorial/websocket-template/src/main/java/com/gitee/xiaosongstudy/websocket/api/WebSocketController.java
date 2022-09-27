@@ -12,15 +12,14 @@ import com.gitee.xiaosongstudy.utils.MD5Util;
 import com.gitee.xiaosongstudy.websocket.constant.Flag;
 import com.gitee.xiaosongstudy.websocket.constant.Globals;
 import com.gitee.xiaosongstudy.websocket.container.StringContainer;
-import com.gitee.xiaosongstudy.websocket.core.RequestStore;
 import com.gitee.xiaosongstudy.websocket.core.WebSocketServer;
 import com.gitee.xiaosongstudy.websocket.entity.MessageStore;
 import com.gitee.xiaosongstudy.websocket.entity.User;
 import com.gitee.xiaosongstudy.websocket.entity.UserMessage;
-import com.gitee.xiaosongstudy.websocket.service.UserService;
-import com.gitee.xiaosongstudy.websocket.vo.UserVo;
 import com.gitee.xiaosongstudy.websocket.service.MessageStoreService;
 import com.gitee.xiaosongstudy.websocket.service.UserMessageService;
+import com.gitee.xiaosongstudy.websocket.service.UserService;
+import com.gitee.xiaosongstudy.websocket.vo.UserVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -95,7 +94,7 @@ public class WebSocketController {
         BusinessAssert.notNull(messageStore.getId(), "消息编号为空！");
         // 建立用户消息关联
         UserMessage userMessage = new UserMessage();
-        userMessage.setUserId(RequestStore.getLoginUser().getId());
+        userMessage.setUserId(userId);
         userMessage.setPushFlag(Flag.FALSE);
         userMessage.setMessageId(messageStore.getId());
         // 存储用户消息关联信息
