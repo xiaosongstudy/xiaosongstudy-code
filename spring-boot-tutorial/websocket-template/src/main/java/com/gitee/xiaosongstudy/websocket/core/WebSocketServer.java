@@ -61,6 +61,7 @@ public class WebSocketServer {
      */
     @OnClose
     public void close(@PathParam("userId") Long userId) {
+        log.info("当前用户编号为：【{}】的用户已断开连接！",userId);
         SESSION_MAP.remove(userId);
     }
 
