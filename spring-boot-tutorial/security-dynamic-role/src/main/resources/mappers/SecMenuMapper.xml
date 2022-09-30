@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gitee.xiaosongstudy.security.mapper.SecMenuMapper">
+
+    <resultMap id="BaseResultMap" type="com.gitee.xiaosongstudy.security.entity.SecMenu">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="modulePath" column="module_path" jdbcType="VARCHAR"/>
+            <result property="path" column="path" jdbcType="VARCHAR"/>
+    </resultMap>
+
+
+    <resultMap id="listAllMenusResultMap" type="com.gitee.xiaosongstudy.security.vo.SecMenuVo">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="modulePath" column="module_path" jdbcType="VARCHAR"/>
+        <result property="path" column="path" jdbcType="VARCHAR"/>
+        <collection property="secRoleList" ofType="com.gitee.xiaosongstudy.security.entity.SecRole">
+            <id property="id" column="roleId"/>
+            <result property="name" column="roleName"/>
+        </collection>
+    </resultMap>
+
+    <!-- 列出所有的菜单  -->
+    <select id="listAllMenus"  resultMap="listAllMenusResultMap">
+        select <include refid="baseMenuInfo"><property name="menu" value="menu"/></include>,
+        sr.id roleId, sr.name roleName
+        from sec_menu menu left join sec_menu_role smr on menu.id = smr.menu_id
+        left join sec_role sr on smr.role_id = sr.id
+    </select>
+
+
+    <sql id="baseMenuInfo">
+       ${menu}.id, ${menu}.module_path, ${menu}.path
+    </sql>
+</mapper>

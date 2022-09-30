@@ -11,6 +11,7 @@
     <module>websocket-template</module>
       <module>exception-handling-center</module>
     <module>utils-center</module>
+      <module>security-dynamic-role</module>
   </modules>
   <packaging>pom</packaging>
 
