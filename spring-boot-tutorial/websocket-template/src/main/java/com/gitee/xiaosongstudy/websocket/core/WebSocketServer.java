@@ -51,23 +51,25 @@ public class WebSocketServer {
      */
     @OnOpen
     public void open(@PathParam("userId") Long userId, Session session) {
+        log.info("当前连接用户为：【{}】",userId);
         SESSION_MAP.put(userId, session);
     }
 
     /**
      * 前端关闭页面或者主动关闭websocket连接，都会执行本方法
      *
-     * @param userId
+     * @param userId 用户编号
      */
     @OnClose
     public void close(@PathParam("userId") Long userId) {
+        log.info("当前断开的用户为：【{}】",userId);
         SESSION_MAP.remove(userId);
     }
 
     /**
      * 监听消息
      *
-     * @param message
+     * @param message 消息
      */
     @OnMessage
     public void onMessage(String message, @PathParam("userId") Long userId) {
@@ -80,8 +82,8 @@ public class WebSocketServer {
     /**
      * 连接异常
      *
-     * @param userId
-     * @param error
+     * @param userId 用户编号
+     * @param error 错误信息
      */
     @OnError
     public void onError(@PathParam("userId") Long userId, Throwable error) {
