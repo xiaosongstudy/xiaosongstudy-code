@@ -31,7 +31,7 @@ CREATE TABLE `message_store` (
   `last_update_time` datetime DEFAULT NULL COMMENT '最近更新时间',
   `last_update_by` datetime DEFAULT NULL COMMENT '最近更新人',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='消息仓库';
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='消息仓库';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,7 +40,82 @@ CREATE TABLE `message_store` (
 
 LOCK TABLES `message_store` WRITE;
 /*!40000 ALTER TABLE `message_store` DISABLE KEYS */;
+INSERT INTO `message_store` VALUES (1,'测试标题','12312321',NULL,NULL,NULL,NULL),(2,'测试标题','12312321',NULL,NULL,NULL,NULL),(3,'测试标题','我是测试内容',NULL,NULL,NULL,NULL),(4,'测试标题','我是测试内容',NULL,NULL,NULL,NULL),(5,'测试标题','我能收到消息吗？',NULL,NULL,NULL,NULL),(6,'测试标题','我能收到消息吗？',NULL,NULL,NULL,NULL),(7,'测试标题','我能收到消息吗？',NULL,NULL,NULL,NULL),(8,'测试标题','我能收到消息吗？',NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `message_store` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `sec_menu`
+--
+
+DROP TABLE IF EXISTS `sec_menu`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sec_menu` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '菜单编号',
+  `module_path` varchar(40) DEFAULT NULL COMMENT '模块路径',
+  `path` varchar(245) DEFAULT NULL COMMENT '路由地址',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='菜单项';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sec_menu`
+--
+
+LOCK TABLES `sec_menu` WRITE;
+/*!40000 ALTER TABLE `sec_menu` DISABLE KEYS */;
+INSERT INTO `sec_menu` VALUES (1,'/test','/sayHello'),(2,'/test','/doUpdateInfo');
+/*!40000 ALTER TABLE `sec_menu` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `sec_menu_role`
+--
+
+DROP TABLE IF EXISTS `sec_menu_role`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sec_menu_role` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '记录编号',
+  `role_id` int DEFAULT NULL COMMENT '角色编号',
+  `menu_id` int DEFAULT NULL COMMENT '菜单编号',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='菜单角色中间表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sec_menu_role`
+--
+
+LOCK TABLES `sec_menu_role` WRITE;
+/*!40000 ALTER TABLE `sec_menu_role` DISABLE KEYS */;
+INSERT INTO `sec_menu_role` VALUES (1,1,1),(2,1,2),(3,2,1);
+/*!40000 ALTER TABLE `sec_menu_role` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `sec_role`
+--
+
+DROP TABLE IF EXISTS `sec_role`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sec_role` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '角色编号',
+  `name` varchar(128) DEFAULT NULL COMMENT '角色名称',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='角色表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sec_role`
+--
+
+LOCK TABLES `sec_role` WRITE;
+/*!40000 ALTER TABLE `sec_role` DISABLE KEYS */;
+INSERT INTO `sec_role` VALUES (1,'admin'),(2,'dev');
+/*!40000 ALTER TABLE `sec_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -71,7 +146,7 @@ CREATE TABLE `system_param` (
 
 LOCK TABLES `system_param` WRITE;
 /*!40000 ALTER TABLE `system_param` DISABLE KEYS */;
-INSERT INTO `system_param` (`id`, `param_name`, `param_desc`, `param_value`, `param_status`, `version`, `create_time`, `create_by`, `last_update_time`, `last_update_by`) VALUES (1,'multiple_login','是否允许同一账号可同时在不同设备上进行登录','1','0','1.0.0','2022-09-22 20:51:08','shiping.song','2022-09-22 20:51:08','shiping.song'),(2,'async_message','是否开启异步消息通知','0','0',NULL,'2022-09-22 21:32:16','shiping.song','2022-09-22 21:32:16','shiping.song');
+INSERT INTO `system_param` VALUES (1,'multiple_login','是否允许同一账号可同时在不同设备上进行登录','1','0','1.0.0','2022-09-22 20:51:08','shiping.song','2022-09-22 20:51:08','shiping.song'),(2,'async_message','是否开启异步消息通知','0','0','1.0.0','2022-09-22 21:32:16','shiping.song','2022-09-22 21:32:16','shiping.song');
 /*!40000 ALTER TABLE `system_param` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -96,7 +171,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` (`id`, `username`, `password`) VALUES (1,'admin','64p4913h805p4e10rj32gj9nn6b14r3');
+INSERT INTO `user` VALUES (1,'admin','64p4913h805p4e10rj32gj9nn6b14r3');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -110,11 +185,10 @@ DROP TABLE IF EXISTS `user_message`;
 CREATE TABLE `user_message` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `user_id` bigint DEFAULT NULL COMMENT '用户编号',
-  `message_id` bigint DEFAULT NULL COMMENT '消息编号',
+  `message_id` int DEFAULT NULL COMMENT '消息编号',
   `push_flag` char(1) DEFAULT NULL COMMENT '是否已推送[0=否(默认)/1=是]',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `user_message_user_id_message_id_uindex` (`user_id`,`message_id`) COMMENT '用户编号_消息编号唯一索引'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户消息中间表';
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户消息中间表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -123,6 +197,7 @@ CREATE TABLE `user_message` (
 
 LOCK TABLES `user_message` WRITE;
 /*!40000 ALTER TABLE `user_message` DISABLE KEYS */;
+INSERT INTO `user_message` VALUES (1,1,3,'0'),(2,1,4,'0'),(3,1,5,'0'),(4,1,6,'1'),(5,1,7,'1'),(6,1,8,'1');
 /*!40000 ALTER TABLE `user_message` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -135,4 +210,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-09-22 23:12:25
+-- Dump completed on 2022-10-02 17:28:21
