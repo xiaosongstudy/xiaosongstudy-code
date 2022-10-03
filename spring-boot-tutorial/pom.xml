@@ -1,89 +1,115 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.gitee.xiaosongstudy</groupId>
-  <artifactId>spring-boot-tutorial</artifactId>
-  <version>1.0.0</version>
-  <modules>
-    <module>websocket-template</module>
-      <module>exception-handling-center</module>
-    <module>utils-center</module>
-      <module>security-dynamic-role</module>
-  </modules>
-  <packaging>pom</packaging>
+    <groupId>com.gitee.xiaosongstudy</groupId>
+    <artifactId>spring-boot-tutorial</artifactId>
+    <version>1.0.0</version>
+    <modules>
+        <module>websocket-template</module>
+        <module>security-dynamic-role</module>
+        <module>base-application</module>
+    </modules>
+    <packaging>pom</packaging>
 
-  <name>spring-boot-tutorial</name>
-  <url>http://coding.hopeurl.life</url>
+    <name>spring-boot-tutorial</name>
+    <url>http://coding.hopeurl.life</url>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <spring.boot.parent.version>2.6.11</spring.boot.parent.version>
-    <hutool.version>5.8.5</hutool.version>
-    <fastjson.version>2.0.12</fastjson.version>
-    <easyexcel.version>3.0.5</easyexcel.version>
-    <mybatisplus.version>3.5.2</mybatisplus.version>
-    <utils.version>1.0.0</utils.version>
-    <exception.handler.version>1.0.0</exception.handler.version>
-  </properties>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <spring.boot.parent.version>2.6.11</spring.boot.parent.version>
+        <hutool.version>5.8.5</hutool.version>
+        <fastjson.version>2.0.12</fastjson.version>
+        <easyexcel.version>3.0.5</easyexcel.version>
+        <mybatisplus.version>3.5.2</mybatisplus.version>
+        <exception.handler.version>1.0.0</exception.handler.version>
+        <common.bean.utils.version>1.9.4</common.bean.utils.version>
+        <jwt.version>0.11.2</jwt.version>
+        <guava.version>29.0-jre</guava.version>
+        <google.version>5</google.version>
+        <base.application.version>1.0.0</base.application.version>
+    </properties>
 
 
-  <dependencyManagement>
-    <!-- spring boot系列依赖 -->
-    <dependencies>
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-dependencies</artifactId>
-        <version>${spring.boot.parent.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
+    <dependencyManagement>
+        <!-- spring boot系列依赖 -->
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring.boot.parent.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
 
-      <!-- hutu工具类 -->
-      <dependency>
-        <groupId>cn.hutool</groupId>
-        <artifactId>hutool-all</artifactId>
-        <version>${hutool.version}</version>
-      </dependency>
+            <!-- hutu工具类 -->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
 
-      <!-- fastjson工具 -->
-      <dependency>
-        <groupId>com.alibaba</groupId>
-        <artifactId>fastjson</artifactId>
-        <version>${fastjson.version}</version>
-      </dependency>
+            <!-- fastjson工具 -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
+            </dependency>
 
-      <!-- easyexcel工具 -->
-      <dependency>
-        <groupId>com.alibaba</groupId>
-        <artifactId>easyexcel</artifactId>
-        <version>${easyexcel.version}</version>
-      </dependency>
+            <!-- easyexcel工具 -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>easyexcel</artifactId>
+                <version>${easyexcel.version}</version>
+            </dependency>
 
-      <!-- mybatis-plus版本 -->
-      <dependency>
-        <groupId>com.baomidou</groupId>
-        <artifactId>mybatis-plus-boot-starter</artifactId>
-        <version>${mybatisplus.version}</version>
-      </dependency>
+            <!-- mybatis-plus版本 -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatisplus.version}</version>
+            </dependency>
 
-      <!-- 全局工具中心 -->
-      <dependency>
-        <groupId>com.gitee.xiaosongstudy</groupId>
-        <artifactId>utils-center</artifactId>
-        <version>${utils.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.gitee.xiaosongstudy</groupId>
-        <artifactId>exception-handling-center</artifactId>
-        <version>${exception.handler.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
+            <dependency>
+                <groupId>commons-beanutils</groupId>
+                <artifactId>commons-beanutils</artifactId>
+                <version>${common.bean.utils.version}</version>
+            </dependency>
+            <!-- jwt相关依赖 -->
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-api</artifactId>
+                <version>${jwt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-impl</artifactId>
+                <scope>runtime</scope>
+                <version>${jwt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-jackson</artifactId> <!-- or jjwt-gson if Gson is preferred -->
+                <scope>runtime</scope>
+                <version>${jwt.version}</version>
+            </dependency>
+            <!-- guava相关依赖 -->
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+            <!-- 基础应用服务 -->
+            <dependency>
+                <groupId>com.gitee.xiaosongstudy</groupId>
+                <artifactId>base-application</artifactId>
+                <version>${base.application.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>

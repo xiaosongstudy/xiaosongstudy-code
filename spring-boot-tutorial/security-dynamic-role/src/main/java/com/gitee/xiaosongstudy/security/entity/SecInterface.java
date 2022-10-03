@@ -9,52 +9,52 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * 菜单项
- * @TableName sec_menu
+ * 接口表
+ * @TableName sec_interface
  */
-@TableName(value ="sec_menu")
+@TableName(value ="sec_interface")
 @Data
-public class SecMenu implements Serializable {
+public class SecInterface implements Serializable {
     /**
-     * 菜单编号
+     * 接口编号
      */
     @TableId(type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 菜单名称
+     * 模块路径
+     */
+    private String modulePath;
+
+    /**
+     * 模块名称
+     */
+    private String moduleName;
+
+    /**
+     * 接口名称
      */
     private String name;
 
     /**
-     * 路由地址
+     * 接口路径
      */
     private String path;
 
     /**
-     * 权限信息
+     * 接口描述
      */
-    private String perms;
+    private String description;
 
     /**
-     * 菜单类型[0=顶级菜单/1=二级菜单/3=按钮]
+     * 版本信息
      */
-    private String type;
+    private String version;
 
     /**
-     * 菜单排序
+     * 是否可用[0=不可用/1=可用(默认)]
      */
-    private Integer sort;
-
-    /**
-     * 父类菜单
-     */
-    private Integer parentId;
-
-    /**
-     * 是否在用[0=否/1=是(默认)]
-     */
-    private String useFlag;
+    private Integer useFlag;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
@@ -70,14 +70,14 @@ public class SecMenu implements Serializable {
         if (getClass() != that.getClass()) {
             return false;
         }
-        SecMenu other = (SecMenu) that;
+        SecInterface other = (SecInterface) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
+            && (this.getModulePath() == null ? other.getModulePath() == null : this.getModulePath().equals(other.getModulePath()))
+            && (this.getModuleName() == null ? other.getModuleName() == null : this.getModuleName().equals(other.getModuleName()))
             && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
             && (this.getPath() == null ? other.getPath() == null : this.getPath().equals(other.getPath()))
-            && (this.getPerms() == null ? other.getPerms() == null : this.getPerms().equals(other.getPerms()))
-            && (this.getType() == null ? other.getType() == null : this.getType().equals(other.getType()))
-            && (this.getSort() == null ? other.getSort() == null : this.getSort().equals(other.getSort()))
-            && (this.getParentId() == null ? other.getParentId() == null : this.getParentId().equals(other.getParentId()))
+            && (this.getDescription() == null ? other.getDescription() == null : this.getDescription().equals(other.getDescription()))
+            && (this.getVersion() == null ? other.getVersion() == null : this.getVersion().equals(other.getVersion()))
             && (this.getUseFlag() == null ? other.getUseFlag() == null : this.getUseFlag().equals(other.getUseFlag()));
     }
 
@@ -86,12 +86,12 @@ public class SecMenu implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
+        result = prime * result + ((getModulePath() == null) ? 0 : getModulePath().hashCode());
+        result = prime * result + ((getModuleName() == null) ? 0 : getModuleName().hashCode());
         result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
         result = prime * result + ((getPath() == null) ? 0 : getPath().hashCode());
-        result = prime * result + ((getPerms() == null) ? 0 : getPerms().hashCode());
-        result = prime * result + ((getType() == null) ? 0 : getType().hashCode());
-        result = prime * result + ((getSort() == null) ? 0 : getSort().hashCode());
-        result = prime * result + ((getParentId() == null) ? 0 : getParentId().hashCode());
+        result = prime * result + ((getDescription() == null) ? 0 : getDescription().hashCode());
+        result = prime * result + ((getVersion() == null) ? 0 : getVersion().hashCode());
         result = prime * result + ((getUseFlag() == null) ? 0 : getUseFlag().hashCode());
         return result;
     }
@@ -103,12 +103,12 @@ public class SecMenu implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
+        sb.append(", modulePath=").append(modulePath);
+        sb.append(", moduleName=").append(moduleName);
         sb.append(", name=").append(name);
         sb.append(", path=").append(path);
-        sb.append(", perms=").append(perms);
-        sb.append(", type=").append(type);
-        sb.append(", sort=").append(sort);
-        sb.append(", parentId=").append(parentId);
+        sb.append(", description=").append(description);
+        sb.append(", version=").append(version);
         sb.append(", useFlag=").append(useFlag);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");

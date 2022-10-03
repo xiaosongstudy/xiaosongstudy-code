@@ -16,6 +16,28 @@ spring:
     user:
       name: admin
       password: lzvrzone
+# 自定义配置项
+application:
+  # 安全配置
+  security:
+    # 允许的ip和端口
+    allowed-origin:
+      - localhost:8080
+      - localhost:9090
+    # 允许通过的请求头
+    allowed-header: '*'
+    # 允许通过的请求方式
+    allowed-method:
+      - GET
+      - POST
+      - DELETE
+      - PUT
+    # 允许跨域访问的路径
+    allowed-path: /**
+    # 配置忽略路径
+    ant-matchers:
+      - /auth/**
+      - /websocket/**
 mybatis-plus:
   mapper-locations: classpath:mappers/**/*.xml
   configuration:

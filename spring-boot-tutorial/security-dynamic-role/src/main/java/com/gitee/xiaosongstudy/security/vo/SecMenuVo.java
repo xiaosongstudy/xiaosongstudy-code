@@ -16,6 +16,7 @@ import java.util.List;
 @Getter
 public class SecMenuVo extends SecMenu {
 
+    private static final long serialVersionUID = -4730525581372381404L;
     /**
      * 角色信息
      */

@@ -4,7 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.gitee.xiaosongstudy.utils.ExceptionUtil;
+import com.gitee.xiaosongstudy.base.utils.ExceptionUtil;
 import com.gitee.xiaosongstudy.websocket.constant.Flag;
 import com.gitee.xiaosongstudy.websocket.entity.MessageStore;
 import com.gitee.xiaosongstudy.websocket.entity.UserMessage;

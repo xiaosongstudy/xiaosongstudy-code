@@ -2,8 +2,8 @@ package com.gitee.xiaosongstudy.websocket.task;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.gitee.xiaosongstudy.websocket.container.MapContainer;
-import com.gitee.xiaosongstudy.websocket.core.RunnerLine;
+import com.gitee.xiaosongstudy.base.core.RunnerLine;
+import com.gitee.xiaosongstudy.base.container.MapContainer;
 import com.gitee.xiaosongstudy.websocket.entity.SystemParam;
 import com.gitee.xiaosongstudy.websocket.service.SystemParamService;
 import lombok.extern.slf4j.Slf4j;
