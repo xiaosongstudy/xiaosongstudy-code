@@ -1,0 +1,9 @@
+spring:
+  redis:
+    lettuce:
+      pool:
+        max-idle: 8
+        min-idle: 2
+    port: 6666
+    password: lzvrzone
+    host: 124.222.213.67

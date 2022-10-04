@@ -3,7 +3,10 @@ package com.gitee.xiaosongstudy.security.config;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
@@ -34,5 +37,15 @@ public class AppConfiguration {
         private List<String> allowedMethod;
         private List<String> allowedPath;
         private List<String> antMatchers;
+    }
+
+    /**
+     * 密码加密器
+     *
+     * @return 密码加密器
+     */
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

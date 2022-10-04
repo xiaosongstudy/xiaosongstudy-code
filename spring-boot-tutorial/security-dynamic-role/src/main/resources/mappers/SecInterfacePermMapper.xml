@@ -13,4 +13,5 @@
     <sql id="Base_Column_List">
         id,menu_id,interface_id
     </sql>
+
 </mapper>

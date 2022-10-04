@@ -1,5 +1,6 @@
 package com.gitee.xiaosongstudy.security.filters;
 
+import com.gitee.xiaosongstudy.security.config.AppConfiguration;
 import com.gitee.xiaosongstudy.security.constant.Globals;
 import com.gitee.xiaosongstudy.security.core.JwtGenerator;
 import com.gitee.xiaosongstudy.security.core.JwtParseInfo;
@@ -30,14 +31,21 @@ import java.util.List;
  */
 @Component
 public class JwtFilter extends OncePerRequestFilter {
-    @Resource
+    @Resource(type = JwtGenerator.class)
     private JwtGenerator jwtGenerator;
+
+    @Resource(type = AppConfiguration.class)
+    private AppConfiguration appConfiguration;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if (request.getRequestURI().contains("/auth") || request.getRequestURI().contains("/websocket")) {
-            filterChain.doFilter(request, response);
-            return;
+        AppConfiguration.Security security = appConfiguration.getSecurity();
+        List<String> allowedOrigin = security.getAllowedOrigin();
+        for (String path : allowedOrigin) {
+            if (path.contains(request.getRequestURI())) {
+                filterChain.doFilter(request, response);
+                return;
+            }
         }
         // Authorization: Bearer xxxxx
         // 从请求头中 Authorization 获取用户的 access_token
@@ -51,7 +59,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 case correct:
                     Claims claims = jpi.getClaims();
                     List<String> authorities = claims.get(Globals.AUTHORITIES, List.class);
-                    String authoritiesString = Joiner.on(",").join(authorities);
+                    String authoritiesString = Joiner.on(Globals.COMMA).join(authorities);
 
                     // 封装一个 UsernamePasswordAuthenticationToken, 因为 Security 判断能否访问资源就是看 SecurityContext 中有没有 token
                     UsernamePasswordAuthenticationToken token =

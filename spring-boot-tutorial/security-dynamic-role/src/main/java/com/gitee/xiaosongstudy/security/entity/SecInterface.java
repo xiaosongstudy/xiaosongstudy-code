@@ -32,11 +32,6 @@ public class SecInterface implements Serializable {
     private String moduleName;
 
     /**
-     * 接口名称
-     */
-    private String name;
-
-    /**
      * 接口路径
      */
     private String path;
@@ -52,9 +47,14 @@ public class SecInterface implements Serializable {
     private String version;
 
     /**
+     * 权限type[1=同时满足(默认)/0=满足其中一个即可]'
+     */
+    private String permType;
+
+    /**
      * 是否可用[0=不可用/1=可用(默认)]
      */
-    private Integer useFlag;
+    private String useFlag;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
@@ -74,7 +74,6 @@ public class SecInterface implements Serializable {
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
             && (this.getModulePath() == null ? other.getModulePath() == null : this.getModulePath().equals(other.getModulePath()))
             && (this.getModuleName() == null ? other.getModuleName() == null : this.getModuleName().equals(other.getModuleName()))
-            && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
             && (this.getPath() == null ? other.getPath() == null : this.getPath().equals(other.getPath()))
             && (this.getDescription() == null ? other.getDescription() == null : this.getDescription().equals(other.getDescription()))
             && (this.getVersion() == null ? other.getVersion() == null : this.getVersion().equals(other.getVersion()))
@@ -88,7 +87,6 @@ public class SecInterface implements Serializable {
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
         result = prime * result + ((getModulePath() == null) ? 0 : getModulePath().hashCode());
         result = prime * result + ((getModuleName() == null) ? 0 : getModuleName().hashCode());
-        result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
         result = prime * result + ((getPath() == null) ? 0 : getPath().hashCode());
         result = prime * result + ((getDescription() == null) ? 0 : getDescription().hashCode());
         result = prime * result + ((getVersion() == null) ? 0 : getVersion().hashCode());
@@ -105,7 +103,6 @@ public class SecInterface implements Serializable {
         sb.append(", id=").append(id);
         sb.append(", modulePath=").append(modulePath);
         sb.append(", moduleName=").append(moduleName);
-        sb.append(", name=").append(name);
         sb.append(", path=").append(path);
         sb.append(", description=").append(description);
         sb.append(", version=").append(version);

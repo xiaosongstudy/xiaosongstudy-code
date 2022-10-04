@@ -1,7 +1,10 @@
 package com.gitee.xiaosongstudy.security.mapper;
 
-import com.gitee.xiaosongstudy.security.entity.SecInterface;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.gitee.xiaosongstudy.security.entity.SecInterface;
+import com.gitee.xiaosongstudy.security.vo.SecInterfaceVo;
+
+import java.util.List;
 
 /**
 * @author hopeurl
@@ -10,6 +13,14 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity com.gitee.xiaosongstudy.security.entity.SecInterface
 */
 public interface SecInterfaceMapper extends BaseMapper<SecInterface> {
+
+
+    /**
+     * 过条件获取接口权限信息
+     * @param condition 条件对象
+     * @return 符合条件的接口权限信息
+     */
+    List<SecInterfaceVo> listAllInterfacePermsByCondition(SecInterfaceVo condition);
 
 }
 

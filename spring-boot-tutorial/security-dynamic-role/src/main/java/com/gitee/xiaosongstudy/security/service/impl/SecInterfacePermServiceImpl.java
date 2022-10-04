@@ -2,8 +2,8 @@ package com.gitee.xiaosongstudy.security.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gitee.xiaosongstudy.security.entity.SecInterfacePerm;
-import com.gitee.xiaosongstudy.security.service.SecInterfacePermService;
 import com.gitee.xiaosongstudy.security.mapper.SecInterfacePermMapper;
+import com.gitee.xiaosongstudy.security.service.SecInterfacePermService;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class SecInterfacePermServiceImpl extends ServiceImpl<SecInterfacePermMapper, SecInterfacePerm>
     implements SecInterfacePermService{
-
 }
 
 

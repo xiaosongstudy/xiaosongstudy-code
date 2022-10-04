@@ -21,7 +21,6 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-// https://blog.csdn.net/yccccc_c/article/details/105877793#:~:text=%E5%8A%A8%E6%80%81%E6%9D%83%E9%99%90%E8%AE%BE%E7%BD%AE%E6%98%AF%E5%9F%BA,%E5%BE%84%E6%97%A0%E9%9C%80%E7%94%A8%E6%88%B7%E8%A7%92%E8%89%B2%EF%BC%9B
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Resource(type = GlobalSecurityFilter.class)

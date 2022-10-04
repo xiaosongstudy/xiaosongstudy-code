@@ -1,12 +1,12 @@
 package com.gitee.xiaosongstudy.base.container;
 
-import org.springframework.data.redis.core.RedisCallback;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SessionCallback;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -38,14 +38,14 @@ public class MapContainer {
      * @param tags 前key应该归属哪一档
      * @param data 数据
      */
-    public void setValue(String tags, Map<String, Object> data) {
-        redisTemplate.executePipelined((RedisCallback<Object>) connection -> {
-            Map<byte[], byte[]> insertData = new HashMap<>();
-            data.forEach((k, v) -> {
-                insertData.put(k.getBytes(StandardCharsets.UTF_8), v.toString().getBytes(StandardCharsets.UTF_8));
-            });
-            connection.hMSet((getPrefix() + tags).getBytes(StandardCharsets.UTF_8), insertData);
-            return null;
+    public void setValue(String tags, Map<String, String> data) {
+        String prefix = this.getPrefix();
+        redisTemplate.executePipelined(new SessionCallback() {
+            @Override
+            public Object execute(RedisOperations operations) throws DataAccessException {
+                operations.opsForHash().putAll(prefix + tags, data);
+                return null;
+            }
         });
     }
 
@@ -57,7 +57,17 @@ public class MapContainer {
      * @return 获取目标值
      */
     public Object getValue(String tags, String key) {
-        return redisTemplate.opsForHash().get(tags, key);
+        return redisTemplate.opsForHash().get(this.getPrefix() + tags, key);
+    }
+
+    /**
+     * 获取指定分类下的所有缓存数据
+     *
+     * @param tags 指定分类
+     * @return 所有符合条件的数据
+     */
+    public Object getValues(String tags) {
+        return redisTemplate.opsForHash().values(this.getPrefix() + tags);
     }
 
     /**

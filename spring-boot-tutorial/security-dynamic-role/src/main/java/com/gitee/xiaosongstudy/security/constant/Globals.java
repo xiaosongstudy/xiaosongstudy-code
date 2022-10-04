@@ -38,4 +38,38 @@ public class Globals {
      * 分隔符-逗号
      */
     public static final String COMMA = ",";
+
+    /**
+     * redis key 接口权限信息
+     */
+    public static final String INTERFACE_PERMS = "interface_perms";
+
+    /**
+     * access_token
+     */
+    public static final String ACCESS_TOKEN = "access_token";
+
+    /**
+     * refresh_token
+     */
+    public static final String REFRESH_TOKEN = "refresh_token";
+
+    /**
+     * 当前接口权限标识
+     */
+    public static final String PERMS_TYPE = "perms_type";
+
+    /**
+     * 标识类
+     */
+    public static class Flag {
+        /**
+         * 断言为真
+         */
+        public static final String TRUE = "1";
+        /**
+         * 断言为假
+         */
+        public static final String FALSE = "0";
+    }
 }

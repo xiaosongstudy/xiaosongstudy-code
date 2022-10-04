@@ -1,14 +1,20 @@
 package com.gitee.xiaosongstudy.security.filters;
 
-import com.gitee.xiaosongstudy.security.service.SecMenuService;
+import com.alibaba.fastjson.JSON;
+import com.gitee.xiaosongstudy.base.container.MapContainer;
+import com.gitee.xiaosongstudy.security.constant.Globals;
+import com.gitee.xiaosongstudy.security.entity.SecMenu;
+import com.gitee.xiaosongstudy.security.vo.SecInterfaceVo;
 import org.springframework.security.access.ConfigAttribute;
+import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.stereotype.Component;
-import org.springframework.util.AntPathMatcher;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * 全局安全过滤器<br/>
@@ -19,12 +25,8 @@ import java.util.Collection;
 @Component
 public class GlobalSecurityFilter implements FilterInvocationSecurityMetadataSource {
 
-    @Resource(type = SecMenuService.class)
-    private SecMenuService secMenuService;
-    /**
-     * 路径匹配符
-     */
-    private final AntPathMatcher pathMatcher = new AntPathMatcher();
+    @Resource(type = MapContainer.class)
+    private MapContainer mapContainer;
 
     @Override
     public Collection<ConfigAttribute> getAttributes(Object object) throws IllegalArgumentException {
@@ -32,21 +34,18 @@ public class GlobalSecurityFilter implements FilterInvocationSecurityMetadataSou
             FilterInvocation filterInvocation = (FilterInvocation) object;
             // 获取请求地址
             String requestUrl = filterInvocation.getRequestUrl();
-            // 获取到与请求地址相关的所有权限信息
-            /*List<SecMenuVo> secMenuVos = secMenuService.listAllMenus();
-            final List<String> rolesStr = new ArrayList<>();
-            secMenuVos.forEach(secMenuVo -> {
-                String apiPath = secMenuVo.getModulePath().concat(secMenuVo.getPath());
-                // 如果路径匹配上了
-                if (pathMatcher.match(apiPath, requestUrl)) {
-                    // 获取角色信息
-                    List<SecRole> secRoleList = secMenuVo.getSecRoleList();
-                    secRoleList.forEach(secRole -> {
-                        rolesStr.add(secRole.getName());
-                    });
+            if (StringUtils.hasText(requestUrl)) {
+                // 从redis中获取到当前接口所需要的权限信息
+                Object permsObj = mapContainer.getValue(Globals.INTERFACE_PERMS, requestUrl);
+                if (null != permsObj) {
+                    SecInterfaceVo secInterfaceVo = JSON.parseObject(permsObj.toString(), SecInterfaceVo.class);
+                    if (null != secInterfaceVo) {
+                        filterInvocation.getRequest().setAttribute(Globals.PERMS_TYPE,secInterfaceVo.getPermType());
+                        List<SecMenu> permList = secInterfaceVo.getPermList();
+                        return SecurityConfig.createList(permList.stream().map(SecMenu::getPerms).toArray(String[]::new));
+                    }
                 }
-            });*/
-//            return rolesStr.size() > 0 ? SecurityConfig.createList(rolesStr.toArray(new String[0])) : null;
+            }
         }
         return null;
     }

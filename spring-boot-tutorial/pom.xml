@@ -23,7 +23,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <spring.boot.parent.version>2.6.11</spring.boot.parent.version>
         <hutool.version>5.8.5</hutool.version>
-        <fastjson.version>2.0.12</fastjson.version>
+        <fastjson.version>1.2.49</fastjson.version>
         <easyexcel.version>3.0.5</easyexcel.version>
         <mybatisplus.version>3.5.2</mybatisplus.version>
         <exception.handler.version>1.0.0</exception.handler.version>

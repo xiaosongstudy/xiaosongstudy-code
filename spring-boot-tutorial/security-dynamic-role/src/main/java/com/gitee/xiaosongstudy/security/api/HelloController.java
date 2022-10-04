@@ -17,4 +17,13 @@ public class HelloController {
     public String doUpdateInfo() {
         return "/doUpdateInfo";
     }
+
+    /**
+     * 返回权限信息
+     * @return 权限信息
+     */
+    @GetMapping("/testPerms")
+    public String testPerms() {
+        return "testPerms";
+    }
 }

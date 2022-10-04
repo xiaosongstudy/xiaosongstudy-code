@@ -1,7 +1,7 @@
 package com.gitee.xiaosongstudy.security.mapper;
 
-import com.gitee.xiaosongstudy.security.entity.SecInterfacePerm;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.gitee.xiaosongstudy.security.entity.SecInterfacePerm;
 
 /**
 * @author hopeurl
@@ -10,7 +10,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity com.gitee.xiaosongstudy.security.entity.SecInterfacePerm
 */
 public interface SecInterfacePermMapper extends BaseMapper<SecInterfacePerm> {
-
 }
 
 

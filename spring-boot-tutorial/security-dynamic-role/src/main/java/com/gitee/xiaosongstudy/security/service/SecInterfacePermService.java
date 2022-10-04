@@ -1,7 +1,7 @@
 package com.gitee.xiaosongstudy.security.service;
 
-import com.gitee.xiaosongstudy.security.entity.SecInterfacePerm;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.gitee.xiaosongstudy.security.entity.SecInterfacePerm;
 
 /**
 * @author hopeurl
@@ -9,5 +9,4 @@ import com.baomidou.mybatisplus.extension.service.IService;
 * @createDate 2022-10-03 17:52:12
 */
 public interface SecInterfacePermService extends IService<SecInterfacePerm> {
-
 }
