@@ -1,0 +1,13 @@
+server:
+  port: 9999
+# 应用相关配置
+app:
+  canal:
+    # canal serve端口
+    port: 11111
+    # 单次处理数据
+    batch-size: 1000
+    # 订阅数据库中哪些表
+    subscribe: .*\..*
+    # 休眠时间 ms
+    interval: 2000
