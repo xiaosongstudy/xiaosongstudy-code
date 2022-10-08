@@ -40,6 +40,11 @@ public class Globals {
     public static final String COMMA = ",";
 
     /**
+     * 全路径匹配
+     */
+    public static final String FULL_PATH_MATCH = "/**";
+
+    /**
      * redis key 接口权限信息
      */
     public static final String INTERFACE_PERMS = "interface_perms";

@@ -40,9 +40,9 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         AppConfiguration.Security security = appConfiguration.getSecurity();
-        List<String> allowedOrigin = security.getAllowedOrigin();
-        for (String path : allowedOrigin) {
-            if (path.contains(request.getRequestURI())) {
+        List<String> antMatchers = security.getAntMatchers();
+        for (String path : antMatchers) {
+            if (request.getRequestURI().startsWith(path.replace(Globals.FULL_PATH_MATCH, ""))) {
                 filterChain.doFilter(request, response);
                 return;
             }
@@ -69,10 +69,11 @@ public class JwtFilter extends OncePerRequestFilter {
                     // 将 UsernamePasswordAuthenticationToken 设置到 SecurityContext中.
                     SecurityContextHolder.getContext().setAuthentication(token);
                     filterChain.doFilter(request, response);
+                    return;
                 case expired:
                     response.setStatus(567);
                     return;
-                case tamper:  // 被篡改了
+                default:
                     response.setStatus(HttpStatus.UNAUTHORIZED.value());  // HttpStatus.UNAUTHORIZED.value() 就是401
             }
 

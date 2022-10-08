@@ -4,6 +4,9 @@ spring:
       pool:
         max-idle: 8
         min-idle: 2
+        max-wait: -1
+        # 连接池最大阻塞等待时间(使用负值表示没有限制)
+        max-active: 1000
     port: 6666
     password: lzvrzone
     host: 124.222.213.67
