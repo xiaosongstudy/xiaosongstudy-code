@@ -11,7 +11,7 @@
         <module>websocket-template</module>
         <module>security-dynamic-role</module>
         <module>base-application</module>
-        <module>cancal-cache-sync</module>
+        <module>canal-cache-sync</module>
     </modules>
     <packaging>pom</packaging>
 

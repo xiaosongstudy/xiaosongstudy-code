@@ -5,11 +5,19 @@ package com.gitee.xiaosongstudy.canal.core;
  */
 public interface CanalSyncHandler {
 
-    void updateOpeartion();
+    default void updateOperation(CanalBean canalBean) {
+        System.out.println(canalBean);
+    }
 
-    void deleteOperation();
+    default void deleteOperation(CanalBean canalBean) {
+        System.out.println(canalBean);
+    }
 
-    void insertOpeartion();
+    default void insertOperation(CanalBean canalBean) {
+        System.out.println(canalBean);
+    }
 
-    void ddlOerpation();
+    default void ddlOperation(CanalBean canalBean) {
+        System.out.println(canalBean);
+    }
 }

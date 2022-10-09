@@ -6,17 +6,24 @@ import com.alibaba.otter.canal.common.utils.AddressUtils;
 import com.alibaba.otter.canal.protocol.CanalEntry;
 import com.alibaba.otter.canal.protocol.Message;
 import com.gitee.xiaosongstudy.canal.config.CanalCacheConfig;
+import com.gitee.xiaosongstudy.canal.core.CanalBean;
+import com.gitee.xiaosongstudy.canal.core.CanalSyncHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.net.InetSocketAddress;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 @Slf4j
 public class CanalClient implements InitializingBean {
+
+    @Resource(type = CanalSyncHandler.class)
+    private CanalSyncHandler canalSyncHandler;
 
     @Resource(type = CanalCacheConfig.class)
     private CanalCacheConfig canalCacheConfig;
@@ -55,22 +62,24 @@ public class CanalClient implements InitializingBean {
                     }
                 } else {
                     // 如果有数据,处理数据
-                    printEntry(message.getEntries());
+                    resolveAndAsync(message.getEntries());
                 }
                 // 进行 batch id 的确认。确认之后，小于等于此 batchId 的 Message 都会被确认。
                 connector.ack(batchId);
             }
         } catch (Exception e) {
-           log.error(CanalClient.class.getSimpleName(),e);
+            log.error(CanalClient.class.getSimpleName(), e);
         } finally {
             connector.disconnect();
         }
     }
 
     /**
-     * 打印canal server解析binlog获得的实体类信息
+     * 解析canal数据并实现数据同步
+     *
+     * @param entrys
      */
-    private static void printEntry(List<CanalEntry.Entry> entrys) {
+    private void resolveAndAsync(List<CanalEntry.Entry> entrys) {
         for (CanalEntry.Entry entry : entrys) {
             if (entry.getEntryType() == CanalEntry.EntryType.TRANSACTIONBEGIN || entry.getEntryType() == CanalEntry.EntryType.TRANSACTIONEND) {
                 // 开启/关闭事务的实体类型，跳过
@@ -85,41 +94,53 @@ public class CanalClient implements InitializingBean {
                 log.error("ERROR ## parser of eromanga-event has an error , data:" + entry, e);
                 return;
             }
+            CanalBean canalBean = new CanalBean();
             // 获取操作类型：insert/update/delete类型
             CanalEntry.EventType eventType = rowChage.getEventType();
             // 打印Header信息
-            System.out.printf("================》; binlog[%s:%s] , name[%s,%s] , eventType : %s%n",
+            log.info(" binlog[{}:{}] , name[{},{}}] , eventType : {}}",
                     entry.getHeader().getLogfileName(), entry.getHeader().getLogfileOffset(),
                     entry.getHeader().getSchemaName(), entry.getHeader().getTableName(),
                     eventType);
+            canalBean.setSchema(entry.getHeader().getSchemaName());
+            canalBean.setTableName(entry.getHeader().getTableName());
             // 判断是否是DDL语句
             if (rowChage.getIsDdl()) {
-                System.out.println("================》;isDdl: true,sql:" + rowChage.getSql());
+                log.info("sDdl: true,sql:{}", rowChage.getSql());
+                canalBean.setDdlSql(rowChage.getSql());
             }
             // 获取RowChange对象里的每一行数据，打印出来
             for (CanalEntry.RowData rowData : rowChage.getRowDatasList()) {
                 // 如果是删除语句
                 if (eventType == CanalEntry.EventType.DELETE) {
-                    printColumn(rowData.getBeforeColumnsList());
-                    // 如果是新增语句
+                    canalBean.setData(integerColumn(rowData.getBeforeColumnsList()));
+                    canalSyncHandler.deleteOperation(canalBean);
                 } else if (eventType == CanalEntry.EventType.INSERT) {
-                    printColumn(rowData.getAfterColumnsList());
-                    // 如果是更新的语句
+                    canalBean.setData(integerColumn(rowData.getAfterColumnsList()));
+                    canalSyncHandler.insertOperation(canalBean);
                 } else {
                     // 变更前的数据
                     System.out.println("------->; before");
-                    printColumn(rowData.getBeforeColumnsList());
+                    integerColumn(rowData.getBeforeColumnsList());
                     // 变更后的数据
                     System.out.println("------->; after");
-                    printColumn(rowData.getAfterColumnsList());
+                    canalBean.setData(integerColumn(rowData.getAfterColumnsList()));
+                    canalSyncHandler.updateOperation(canalBean);
                 }
             }
         }
     }
 
-    private static void printColumn(List<CanalEntry.Column> columns) {
-        for (CanalEntry.Column column : columns) {
-            System.out.println(column.getName() + " : " + column.getValue() + "    update=" + column.getUpdated());
-        }
+    /**
+     * 组装列值
+     *
+     * @param columns 待封装的列
+     */
+    private Map<String, String> integerColumn(List<CanalEntry.Column> columns) {
+        final Map<String, String> data = new HashMap<>(columns.size() / 2);
+        columns.forEach(column -> {
+            data.put(column.getName(), column.getValue());
+        });
+        return data.isEmpty() ? null : data;
     }
 }
