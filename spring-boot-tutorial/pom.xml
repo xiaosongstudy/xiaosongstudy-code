@@ -18,7 +18,6 @@
     <packaging>pom</packaging>
 
     <name>spring-boot-tutorial</name>
-    <url>http://coding.hopeurl.life</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
