@@ -109,6 +109,7 @@ public class CanalClient implements InitializingBean {
                 log.info("sDdl: true,sql:{}", rowChage.getSql());
                 canalBean.setDdlSql(rowChage.getSql());
             }
+            System.out.println(rowChage.getSql());
             // 获取RowChange对象里的每一行数据，打印出来
             for (CanalEntry.RowData rowData : rowChage.getRowDatasList()) {
                 // 如果是删除语句
