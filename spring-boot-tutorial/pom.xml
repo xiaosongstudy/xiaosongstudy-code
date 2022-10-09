@@ -12,6 +12,8 @@
         <module>security-dynamic-role</module>
         <module>base-application</module>
         <module>canal-cache-sync</module>
+        <module>xxl-job-template</module>
+        <module>rpc-tutorial</module>
     </modules>
     <packaging>pom</packaging>
 
