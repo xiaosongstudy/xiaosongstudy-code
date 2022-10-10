@@ -1,9 +1,15 @@
 package com.gitee.xiaosongstudy.request.jdk;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.gitee.xiaosongstudy.request.bean.User;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -11,6 +17,8 @@ import java.util.regex.Pattern;
 
 /**
  * 远程调用工具类
+ *
+ * @author hopeurl
  */
 public class RemoteInvocationUtil {
 
@@ -23,52 +31,133 @@ public class RemoteInvocationUtil {
     }
 
     public static void main(String[] args) {
-
+        // 返回正常
+//        RemoteInvocationUtil.getForEntity("http://localhost:9022/request/sayHello", null);
+        // 返回正常
+//        User forEntity = RemoteInvocationUtil.getForEntity("http://localhost:9022/request/getJsonStr", User.class);
+//        System.out.println(forEntity);
+        Map<String, Object> pathVariables = new HashMap<>();
+        pathVariables.put("id", 1);
+        pathVariables.put("username", "张三");
+        // 在进行时间转化时后台需要额外做配置
+//        pathVariables.put("birthday", LocalDate.now());
+        System.out.println(RemoteInvocationUtil.getForEntity("http://localhost:9022/request/param", pathVariables, User.class));
+        System.out.println(RemoteInvocationUtil.getForEntity("http://localhost:9022/request/paramWithEntity", pathVariables, User.class));
+//        System.out.println(RemoteInvocationUtil.getForEntity("http://localhost:9022/request/param?id=1&username=%E5%BC%A0%E4%B8%89", null, User.class));
+        Map<String, Object> postPathVariables = new HashMap<>();
+        postPathVariables.put("param", "我是测试数据");
+        RemoteInvocationUtil.postForLocation("http://localhost:9022/request/postStr", postPathVariables);
+        User user = User.builder().id(20221010).username("里斯").build();
+        System.out.println(RemoteInvocationUtil.postForEntity("http://localhost:9022/request/postWithEntity", JSON.toJSONString(user), String.class));
     }
 
     /**
-     * 通过get请求获取相应实体类
+     * get请求-有返回值
      *
-     * @return 响应结果
+     * @param url           请求地址
+     * @param headersMap    请求头集合
+     * @param pathVariables 参数
+     * @param timeout       超时时间
+     * @param entityClz     目标实体类
+     * @param <T>
+     * @return
      */
-    public static <T> T getForEntity(String url, Map<String, String> headersMap, Map<String, Object> pathVariables, int timeout, Class<?> entityClz) {
-        return null;
+    public static <T> T getForEntity(String url, Map<String, String> headersMap, Map<String, Object> pathVariables, int timeout, Class<T> entityClz) {
+        String result = doRequest(url, HttpMethod.GET, headersMap, null, pathVariables, timeout);
+        return JSONObject.parseObject(result, entityClz);
     }
 
-    public static <T> T getForEntity(String url, Map<String, String> headersMap, Map<String, Object> pathVariables, Class<?> entityClz) {
-        return null;
+    public static <T> T getForEntity(String url, Map<String, String> headersMap, Map<String, Object> pathVariables, Class<T> entityClz) {
+        return getForEntity(url, headersMap, pathVariables, TIMEOUT, entityClz);
     }
 
-    public static <T> T getForEntity(String url, Map<String, Object> pathVariables, Class<?> entityClz) {
-        return null;
+    public static <T> T getForEntity(String url, Map<String, Object> pathVariables, Class<T> entityClz) {
+        return getForEntity(url, null, pathVariables, entityClz);
     }
 
-    public static <T> T getForEntity(String url, Class<?> entityClz) {
-        return null;
+    public static <T> T getForEntity(String url, Class<T> entityClz) {
+        return getForEntity(url, null, entityClz);
     }
 
     public static void getForLocation(String url, Map<String, String> headersMap, Map<String, Object> pathVariables, int timeout) {
+        doRequest(url, HttpMethod.GET, headersMap, null, pathVariables, timeout);
     }
 
     public static void getForLocation(String url, Map<String, String> headersMap, Map<String, Object> pathVariables) {
+        getForLocation(url, headersMap, pathVariables, TIMEOUT);
     }
 
     public static void getForLocation(String url, Map<String, String> headersMap) {
+        getForLocation(url, headersMap, null);
     }
 
     public static void getForLocation(String url) {
+        getForLocation(url, null);
     }
 
     /**
-     * 通过post请求获取相应实体类
+     * post请求-有返回值
      *
-     * @return 响应结果
+     * @param url           目标地址
+     * @param headersMap    请求头
+     * @param body          请求体
+     * @param pathVariables 参数
+     * @param timeout       超时时间
+     * @param entityClz     响应实体类字节码对象
+     * @param <T>
+     * @return
      */
-    public static <T> T postForEntity(String url, Map<String, String> headersMap, String body, Map<String, Object> pathVariables, int timeout, Class<?> entityClz) {
-        return null;
+    public static <T> T postForEntity(String url, Map<String, String> headersMap, String body, Map<String, Object> pathVariables, int timeout, Class<T> entityClz) {
+        if (!isNotEmpty(headersMap)) {
+            headersMap = new HashMap<>();
+        }
+        headersMap.put(HttpHeaders.CONTENT_TYPE, MimeType.APPLICATION_JSON_VALUE);
+        // 执行结果
+        String result = doRequest(url, HttpMethod.POST, headersMap, body, pathVariables, timeout);
+        if (entityClz == String.class) {
+            return (T) result;
+        }
+        return JSONObject.parseObject(result, entityClz);
+    }
+
+    public static <T> T postForEntity(String url, Map<String, String> headersMap, String body, Map<String, Object> pathVariables, Class<T> entityClz) {
+        return postForEntity(url, headersMap, body, pathVariables, TIMEOUT, entityClz);
+    }
+
+    public static <T> T postForEntity(String url, Map<String, String> headersMap, String body, Class<T> entityClz) {
+        return postForEntity(url, headersMap, body, null, TIMEOUT, entityClz);
+    }
+
+    public static <T> T postForEntity(String url, String body, Class<T> entityClz) {
+        return postForEntity(url, null, body, entityClz);
+    }
+
+    public static <T> T postForEntity(String url, Class<T> entityClz) {
+        return postForEntity(url, null);
     }
 
     public static void postForLocation(String url, Map<String, String> headersMap, String body, Map<String, Object> pathVariables, int timeout) {
+        doRequest(url, HttpMethod.POST, headersMap, body, pathVariables, timeout);
+    }
+
+    public static void postForLocation(String url, Map<String, String> headersMap, String body, Map<String, Object> pathVariables) {
+        postForLocation(url, headersMap, body, pathVariables, TIMEOUT);
+    }
+
+    public static void postForLocation(String url, Map<String, String> headersMap, String body) {
+        postForLocation(url, headersMap, body, null);
+    }
+
+    public static void postForLocation(String url, Map<String, Object> pathVariables) {
+        postForLocation(url, null, null, pathVariables);
+    }
+
+    public static void postForLocation(String url, String body) {
+        postForLocation(url, null, body);
+    }
+
+    public static void postAttachment(String url, Map<String, String> headersMap, Map<String, Object> pathVariables, String body, int timeout, File file) {
+
     }
 
     /**
@@ -82,11 +171,11 @@ public class RemoteInvocationUtil {
      * @param timeout       超时时间
      * @return 可能存在的执行结果
      */
-    private static Object doRequest(String url, HttpMethod httpMethod, Map<String, String> headersMap, String body, Map<String, Object> pathVariables, int timeout) {
+    private static String doRequest(String url, HttpMethod httpMethod, Map<String, String> headersMap, String body, Map<String, Object> pathVariables, int timeout) {
         assertHttpRequest(url);
         HttpURLConnection conn = null;
         InputStream inputStream = null;
-        BufferedReader bufferedReader = null;
+        BufferedInputStream bufferedInputStream = null;
         OutputStream outputStream;
         try {
             // 如果路径参数存在则需要修改请求地址
@@ -94,7 +183,12 @@ public class RemoteInvocationUtil {
                 final StringBuilder sb = new StringBuilder(url);
                 sb.append("?");
                 pathVariables.forEach((key, value) -> {
-                    sb.append(key).append("=").append(value).append("&");
+                    try {
+                        // 这里如果有中文的话会乱码，所以应该进行一次转码
+                        sb.append(key).append("=").append(URLEncoder.encode(value.toString(), "utf-8")).append("&");
+                    } catch (UnsupportedEncodingException e) {
+                        throw new RuntimeException(e);
+                    }
                 });
                 url = sb.toString();
                 // 去掉最后一个&符号
@@ -107,6 +201,11 @@ public class RemoteInvocationUtil {
             conn.setConnectTimeout(timeout);
             conn.setReadTimeout(timeout);
 
+            if (HttpMethod.POST == httpMethod) {
+                // post方式不能使用缓存
+                conn.setUseCaches(false);
+            }
+
             // 设置请求头
             if (isNotEmpty(headersMap)) {
                 Set<Map.Entry<String, String>> entries = headersMap.entrySet();
@@ -116,29 +215,27 @@ public class RemoteInvocationUtil {
             }
 
             // 如果当前请求有请求体
-            if (null != body && !(body.trim().length() > 0)) {
+            if (null != body && body.trim().length() > 0) {
+                conn.setDoOutput(true);
                 outputStream = conn.getOutputStream();
                 outputStream.write(body.getBytes(StandardCharsets.UTF_8));
             }
-
-            conn.connect();
-
-            inputStream = conn.getInputStream();
-            bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-
-            // 拼接返回参数
             StringBuilder sb = new StringBuilder();
-            String responseMsg;
-            while ((responseMsg = bufferedReader.readLine()) != null) {
-                sb.append(responseMsg);
+            conn.connect();
+            inputStream = conn.getInputStream();
+            bufferedInputStream = new BufferedInputStream(inputStream);
+            byte[] bytes = new byte[1024 * 4];
+            int len = -1;
+            while ((len = bufferedInputStream.read(bytes)) != -1) {
+                sb.append(new String(bytes, 0, len));
             }
             return sb.toString();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (bufferedReader != null) {
+            if (bufferedInputStream != null) {
                 try {
-                    bufferedReader.close();
+                    bufferedInputStream.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -185,13 +282,37 @@ public class RemoteInvocationUtil {
      * http方法类
      */
     public enum HttpMethod {
+        /**
+         * get请求
+         */
         GET("GET"),
+        /**
+         * post请求
+         */
         POST("POST"),
+        /**
+         * head请求
+         */
         HEAD("HEAD"),
+        /**
+         * options请求
+         */
         OPTIONS("OPTIONS"),
+        /**
+         * trace请求
+         */
         TRACE("TRACE"),
+        /**
+         * patch请求
+         */
         PATCH("PATCH"),
+        /**
+         * delete请求
+         */
         DELETE("DELETE"),
+        /**
+         * put请求
+         */
         PUT("PUT");
 
         HttpMethod(String value) {
@@ -584,5 +705,21 @@ public class RemoteInvocationUtil {
          * http bearer头
          */
         public static final String BEARER = "Bearer ";
+    }
+
+    /**
+     * 媒体类型类
+     */
+    public static class MimeType {
+        public static final String APPLICATION_JSON_VALUE = "application/json";
+        public static final String APPLICATION_GRAPHQL_VALUE = "application/graphql+json";
+        public static final String APPLICATION_OCTET_STREAM_VALUE = "application/octet-stream";
+        public static final String APPLICATION_XML_VALUE = "application/xml";
+        public static final String IMAGE_GIF_VALUE = "image/gif";
+        public static final String IMAGE_JPEG_VALUE = "image/jpeg";
+        public static final String IMAGE_PNG_VALUE = "image/png";
+        public static final String TEXT_HTML_VALUE = "text/html";
+        public static final String TEXT_PLAIN_VALUE = "text/plain";
+        public static final String TEXT_XML_VALUE = "text/xml";
     }
 }
