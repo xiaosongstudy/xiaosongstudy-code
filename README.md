@@ -1,8 +1,6 @@
 # 应用案例合集
 ## Spring Boot Tutorial
 > 本工程为Spring Boot系列案例代码，持续更新中...
-### websocket-template
-之前也零零散散的编写过其他的案例代码，但是这一次想要更加系统的编写以及管理案例代码，第一个案例是与WebSocket的相关的。
 ### base-application
 本项目是一个基础服务功能，综合了日常项目断言、全局异常处理、缓存Redis、同一请求响应处理、系统基础工具类（包含线程任务调度、时间、md5、异常等工具类。）
 ### canal-cache-sync
@@ -12,6 +10,8 @@
 ### security-dynamic-role
 本项目为动态权限配置案例代码，基于Spring Boot + Spring Security + MySQL实现动态权限配置，无需手动在接口上静态配置权限信息，
 所有权限信息均配置于数据库中，这样可以更加灵活的控制系统各项权限，基础功能已实现。
+### websocket-template
+之前也零零散散的编写过其他的案例代码，但是这一次想要更加系统的编写以及管理案例代码，第一个案例是与WebSocket的相关的。
 ### xxj-job-template
 xxj-job开源项目示例代码（待完善，初步接触过，但是具体代码原理尚未仔细研究）
 ## request-invocation
