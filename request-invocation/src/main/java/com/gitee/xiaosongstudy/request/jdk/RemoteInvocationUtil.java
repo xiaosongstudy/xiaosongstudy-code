@@ -9,6 +9,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -31,6 +32,12 @@ public class RemoteInvocationUtil {
     }
 
     public static void main(String[] args) {
+//        System.out.println(Objects.requireNonNull(RemoteInvocationUtil.class.getClassLoader().getResource("")).getPath());
+        System.out.println(RemoteInvocationUtil.postAttachment("http://localhost:9022/request/upload", new File("E:\\认证图片\\平台授权说明书_看图王.jpg")));
+//        test01();
+    }
+
+    private static void test01() {
         // 返回正常
 //        RemoteInvocationUtil.getForEntity("http://localhost:9022/request/sayHello", null);
         // 返回正常
@@ -63,7 +70,7 @@ public class RemoteInvocationUtil {
      * @return
      */
     public static <T> T getForEntity(String url, Map<String, String> headersMap, Map<String, Object> pathVariables, int timeout, Class<T> entityClz) {
-        String result = doRequest(url, HttpMethod.GET, headersMap, null, pathVariables, timeout);
+        String result = doRequest(url, HttpMethod.GET, headersMap, null, pathVariables, timeout, null);
         return JSONObject.parseObject(result, entityClz);
     }
 
@@ -80,7 +87,7 @@ public class RemoteInvocationUtil {
     }
 
     public static void getForLocation(String url, Map<String, String> headersMap, Map<String, Object> pathVariables, int timeout) {
-        doRequest(url, HttpMethod.GET, headersMap, null, pathVariables, timeout);
+        doRequest(url, HttpMethod.GET, headersMap, null, pathVariables, timeout, null);
     }
 
     public static void getForLocation(String url, Map<String, String> headersMap, Map<String, Object> pathVariables) {
@@ -113,7 +120,7 @@ public class RemoteInvocationUtil {
         }
         headersMap.put(HttpHeaders.CONTENT_TYPE, MimeType.APPLICATION_JSON_VALUE);
         // 执行结果
-        String result = doRequest(url, HttpMethod.POST, headersMap, body, pathVariables, timeout);
+        String result = doRequest(url, HttpMethod.POST, headersMap, body, pathVariables, timeout, null);
         if (entityClz == String.class) {
             return (T) result;
         }
@@ -137,7 +144,7 @@ public class RemoteInvocationUtil {
     }
 
     public static void postForLocation(String url, Map<String, String> headersMap, String body, Map<String, Object> pathVariables, int timeout) {
-        doRequest(url, HttpMethod.POST, headersMap, body, pathVariables, timeout);
+        doRequest(url, HttpMethod.POST, headersMap, body, pathVariables, timeout, null);
     }
 
     public static void postForLocation(String url, Map<String, String> headersMap, String body, Map<String, Object> pathVariables) {
@@ -156,8 +163,12 @@ public class RemoteInvocationUtil {
         postForLocation(url, null, body);
     }
 
-    public static void postAttachment(String url, Map<String, String> headersMap, Map<String, Object> pathVariables, String body, int timeout, File file) {
+    public static String postAttachment(String url, Map<String, String> headersMap, Map<String, Object> pathVariables, int timeout, File file) {
+        return doRequest(url, HttpMethod.POST, headersMap, null, pathVariables, timeout, file);
+    }
 
+    public static String postAttachment(String url, File file) {
+        return postAttachment(url, null, null, TIMEOUT, file);
     }
 
     /**
@@ -171,87 +182,199 @@ public class RemoteInvocationUtil {
      * @param timeout       超时时间
      * @return 可能存在的执行结果
      */
-    private static String doRequest(String url, HttpMethod httpMethod, Map<String, String> headersMap, String body, Map<String, Object> pathVariables, int timeout) {
+    private static String doRequest(String url, HttpMethod httpMethod, Map<String, String> headersMap, String body, Map<String, Object> pathVariables, int timeout, File file) {
         assertHttpRequest(url);
         HttpURLConnection conn = null;
-        InputStream inputStream = null;
-        BufferedInputStream bufferedInputStream = null;
-        OutputStream outputStream;
         try {
             // 如果路径参数存在则需要修改请求地址
-            if (isNotEmpty(pathVariables)) {
-                final StringBuilder sb = new StringBuilder(url);
-                sb.append("?");
-                pathVariables.forEach((key, value) -> {
-                    try {
-                        // 这里如果有中文的话会乱码，所以应该进行一次转码
-                        sb.append(key).append("=").append(URLEncoder.encode(value.toString(), "utf-8")).append("&");
-                    } catch (UnsupportedEncodingException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
-                url = sb.toString();
-                // 去掉最后一个&符号
-                sb.replace(url.length() - 1, url.length(), "");
-                url = sb.toString();
-            }
-            URL httpUrl = new URL(url);
-            conn = (HttpURLConnection) httpUrl.openConnection();
-            conn.setRequestMethod(httpMethod.value);
-            conn.setConnectTimeout(timeout);
-            conn.setReadTimeout(timeout);
-
-            if (HttpMethod.POST == httpMethod) {
-                // post方式不能使用缓存
-                conn.setUseCaches(false);
-            }
-
+            url = setPathVariables(url, pathVariables);
+            conn = getBaseConnection(url, httpMethod, timeout);
             // 设置请求头
-            if (isNotEmpty(headersMap)) {
-                Set<Map.Entry<String, String>> entries = headersMap.entrySet();
-                for (Map.Entry<String, String> entry : entries) {
-                    conn.setRequestProperty(entry.getKey(), entry.getValue());
-                }
-            }
-
+            setHeaders(conn, headersMap);
             // 如果当前请求有请求体
-            if (null != body && body.trim().length() > 0) {
-                conn.setDoOutput(true);
-                outputStream = conn.getOutputStream();
-                outputStream.write(body.getBytes(StandardCharsets.UTF_8));
-            }
-            StringBuilder sb = new StringBuilder();
-            conn.connect();
-            inputStream = conn.getInputStream();
-            bufferedInputStream = new BufferedInputStream(inputStream);
-            byte[] bytes = new byte[1024 * 4];
-            int len = -1;
-            while ((len = bufferedInputStream.read(bytes)) != -1) {
-                sb.append(new String(bytes, 0, len));
-            }
-            return sb.toString();
+            writeBody(conn, body);
+            // 如果请求携带附件信息
+            writeAttachment(conn, file);
+            return resolveResponse(conn);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (bufferedInputStream != null) {
-                try {
-                    bufferedInputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            if (null != conn) {
+                conn.disconnect();
             }
-            if (inputStream != null) {
+        }
+        return null;
+    }
+
+    /**
+     * 获取基础的连接
+     *
+     * @param url
+     * @param httpMethod
+     * @param timeout
+     * @return
+     * @throws IOException
+     */
+
+    private static HttpURLConnection getBaseConnection(String url, HttpMethod httpMethod, int timeout) throws IOException {
+        URL httpUrl = new URL(url);
+        HttpURLConnection conn = (HttpURLConnection) httpUrl.openConnection();
+        conn.setRequestMethod(httpMethod.value);
+        conn.setConnectTimeout(timeout);
+        conn.setReadTimeout(timeout);
+        if (HttpMethod.POST == httpMethod) {
+            // post方式不能使用缓存
+            conn.setUseCaches(false);
+        }
+        return conn;
+    }
+
+    /**
+     * 发送附件
+     *
+     * @param conn
+     * @param file
+     * @throws IOException
+     */
+    private static void writeAttachment(HttpURLConnection conn, File file) throws IOException {
+        if (null != file) {
+            if (file.exists()) {
+                OutputStream outputStream = null;
+                DataInputStream in = null;
+                conn.setDoOutput(true);
+                String boundary = "----------" + System.currentTimeMillis();
+                conn.setRequestProperty(HttpHeaders.CONTENT_TYPE, HeaderValue.MULTIPART_FORM_DATA_VALUE + boundary);
+                // 完善附件请求内容
+                String sb = "--" +
+                        boundary + "\r\n" +
+                        "Content-Disposition: form-data;name=\"file\";filename=\"" + URLEncoder.encode(file.getName(), "utf-8") + "\r\n" +
+                        "Content-Type:application/octet-stream\r\n\r\n";
+                // 转化表头
+                byte[] head = sb.getBytes(StandardCharsets.UTF_8);
+                // 获取到输出流
+                try {
+                    outputStream = new DataOutputStream(conn.getOutputStream());
+                    // 输出表头
+                    outputStream.write(head);
+                    // 文件正文内容 文件以流的形式传输
+                    in = new DataInputStream(Files.newInputStream(file.toPath()));
+                    int bytes;
+                    byte[] bufferOut = new byte[1024 * 8];
+                    while ((bytes = in.read(bufferOut)) != -1) {
+                        outputStream.write(bufferOut, 0, bytes);
+                    }
+                    // 结尾部分 定义最后数据分隔线
+                    byte[] foot = ("\r\n--" + boundary + "--\r\n").getBytes(StandardCharsets.UTF_8);
+                    outputStream.write(foot);
+                    outputStream.flush();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                } finally {
+                    if (in != null) {
+                        in.close();
+                    }
+                    if (outputStream != null) {
+                        outputStream.close();
+                    }
+                }
+            } else {
+                throw new FileNotFoundException(String.format("文件【%s】不存在", file.getAbsolutePath()));
+            }
+        }
+    }
+
+
+    /**
+     * 设置参数
+     *
+     * @param url
+     * @param pathVariables
+     * @return
+     */
+    private static String setPathVariables(String url, Map<String, Object> pathVariables) {
+        if (isNotEmpty(pathVariables)) {
+            final StringBuilder sb = new StringBuilder(url);
+            sb.append("?");
+            pathVariables.forEach((key, value) -> {
+                try {
+                    // 这里如果有中文的话会乱码，所以应该进行一次转码
+                    sb.append(key).append("=").append(URLEncoder.encode(value.toString(), "utf-8")).append("&");
+                } catch (UnsupportedEncodingException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            url = sb.toString();
+            // 去掉最后一个&符号
+            sb.replace(url.length() - 1, url.length(), "");
+            url = sb.toString();
+        }
+        return url;
+    }
+
+    /**
+     * 设置头信息
+     *
+     * @param conn
+     * @param headersMap
+     */
+    private static void setHeaders(HttpURLConnection conn, Map<String, String> headersMap) {
+        if (isNotEmpty(headersMap)) {
+            Set<Map.Entry<String, String>> entries = headersMap.entrySet();
+            for (Map.Entry<String, String> entry : entries) {
+                conn.setRequestProperty(entry.getKey(), entry.getValue());
+            }
+        }
+    }
+
+    /**
+     * write body
+     *
+     * @param conn
+     * @param body
+     */
+    private static void writeBody(HttpURLConnection conn, String body) throws IOException {
+        if (null != body && body.trim().length() > 0) {
+            conn.setDoOutput(true);
+            OutputStream outputStream = conn.getOutputStream();
+            outputStream.write(body.getBytes(StandardCharsets.UTF_8));
+            outputStream.flush();
+        }
+    }
+
+
+    /**
+     * 解析响应数据
+     *
+     * @param conn
+     * @return
+     */
+    private static String resolveResponse(HttpURLConnection conn) {
+        StringBuilder sb = new StringBuilder();
+        InputStream inputStream = null;
+        try {
+            conn.connect();
+            inputStream = conn.getInputStream();
+            BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
+            byte[] bytes = new byte[1024 * 4];
+            int len;
+            while ((len = bufferedInputStream.read(bytes)) != -1) {
+                sb.append(new String(bytes, 0, len));
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (null != inputStream) {
                 try {
                     inputStream.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-            if (conn != null) {
+            if (null != conn) {
                 conn.disconnect();
             }
         }
-        return null;
+        return sb.toString();
     }
 
     /**
@@ -721,5 +844,15 @@ public class RemoteInvocationUtil {
         public static final String TEXT_HTML_VALUE = "text/html";
         public static final String TEXT_PLAIN_VALUE = "text/plain";
         public static final String TEXT_XML_VALUE = "text/xml";
+    }
+
+    /**
+     * 请求值
+     */
+    public static class HeaderValue {
+        /**
+         * 服务于文件上传时 Content-Type
+         */
+        public static final String MULTIPART_FORM_DATA_VALUE = "multipart/form-data;boundary=";
     }
 }
