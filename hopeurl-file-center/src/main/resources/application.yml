@@ -1,1 +1,46 @@
-
+spring:
+  application:
+    name: security-dynamic-role
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/spring_boot_tutorial?serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-init-sql: select 1
+  servlet:
+    multipart:
+      max-request-size: 400MB
+      max-file-size: 400MB
+# 自定义配置项
+application:
+  # 安全配置
+  security:
+    # 允许的ip和端口
+    allowed-origin:
+      - localhost:8080
+      - localhost:9090
+    # 允许通过的请求头
+    allowed-header: '*'
+    # 允许通过的请求方式
+    allowed-method:
+      - GET
+      - POST
+      - DELETE
+      - PUT
+    # 允许跨域访问的路径
+    allowed-path: /**
+    # 配置忽略路径
+    ant-matchers:
+      - /auth/**
+      - /websocket/**
+  file:
+    save-path: f:/UploadFile/986310747
+server:
+  port: 8025
+mybatis-plus:
+  mapper-locations: classpath:mappers/**/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
