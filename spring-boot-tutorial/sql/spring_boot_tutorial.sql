@@ -16,6 +16,73 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `file_chunk`
+--
+
+DROP TABLE IF EXISTS `file_chunk`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `file_chunk` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `file_name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT '文件名',
+  `chunk_number` int DEFAULT NULL COMMENT '当前分片，从1开始',
+  `chunk_size` decimal(12,0) DEFAULT NULL COMMENT '分片大小',
+  `current_chunk_size` decimal(12,0) DEFAULT NULL COMMENT '当前分片大小',
+  `total_size` decimal(12,0) DEFAULT NULL COMMENT '文件总大小',
+  `total_chunk` int DEFAULT NULL COMMENT '总分片数',
+  `identifier` varchar(45) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT '文件标识',
+  `relative_path` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT 'md5校验码',
+  `create_time` datetime,
+  `update_time` datetime,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1533 DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `file_chunk`
+--
+
+LOCK TABLES `file_chunk` WRITE;
+/*!40000 ALTER TABLE `file_chunk` DISABLE KEYS */;
+INSERT INTO `file_chunk` VALUES (1529,'aaa.zip',2,20971520,20971520,127359793,6,'59cecb53285a9c6ec8f9f430b2cb5512','aaa.zip','2022-10-12 17:18:24','2022-10-12 17:18:24'),(1530,'aaa.zip',4,20971520,20971520,127359793,6,'59cecb53285a9c6ec8f9f430b2cb5512','aaa.zip','2022-10-12 17:18:24','2022-10-12 17:18:24'),(1531,'aaa.zip',5,20971520,20971520,127359793,6,'59cecb53285a9c6ec8f9f430b2cb5512','aaa.zip','2022-10-12 17:18:24','2022-10-12 17:18:24'),(1532,'aaa.zip',6,20971520,22502193,127359793,6,'59cecb53285a9c6ec8f9f430b2cb5512','aaa.zip','2022-10-12 17:18:27','2022-10-12 17:18:27');
+/*!40000 ALTER TABLE `file_chunk` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `file_local_storage`
+--
+
+DROP TABLE IF EXISTS `file_local_storage`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `file_local_storage` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `real_name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT '文件真实的名称',
+  `name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT '文件名',
+  `suffix` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT '后缀',
+  `path` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT '路径',
+  `type` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT '类型',
+  `size` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT '大小',
+  `identifier` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT 'md5校验码\r\n',
+  `create_by` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT '创建者',
+  `update_by` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT '更新者',
+  `create_time` datetime,
+  `updatetime` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=3361 DEFAULT CHARSET=utf8mb3 ROW_FORMAT=COMPACT COMMENT='文件存储';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `file_local_storage`
+--
+
+LOCK TABLES `file_local_storage` WRITE;
+/*!40000 ALTER TABLE `file_local_storage` DISABLE KEYS */;
+INSERT INTO `file_local_storage` VALUES (3360,'aaa.zip','aaa.zip','.zip','aaa.zip','其他','1GB   ','59cecb53285a9c6ec8f9f430b2cb5512','hopeurl-file-center','hopeurl-file-center','2022-10-12 17:18:27','2022-10-12 17:18:27');
+/*!40000 ALTER TABLE `file_local_storage` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `message_store`
 --
 
@@ -40,7 +107,7 @@ CREATE TABLE `message_store` (
 
 LOCK TABLES `message_store` WRITE;
 /*!40000 ALTER TABLE `message_store` DISABLE KEYS */;
-INSERT INTO `message_store` (`id`, `title`, `content`, `create_time`, `create_by`, `last_update_time`, `last_update_by`) VALUES (1,'测试标题','12312321',NULL,NULL,NULL,NULL),(2,'测试标题','12312321',NULL,NULL,NULL,NULL),(3,'测试标题','我是测试内容',NULL,NULL,NULL,NULL),(4,'测试标题','我是测试内容',NULL,NULL,NULL,NULL),(5,'测试标题','我能收到消息吗？',NULL,NULL,NULL,NULL),(6,'测试标题','我能收到消息吗？',NULL,NULL,NULL,NULL),(7,'测试标题','我能收到消息吗？',NULL,NULL,NULL,NULL),(8,'测试标题','我能收到消息吗？',NULL,NULL,NULL,NULL);
+INSERT INTO `message_store` VALUES (1,'测试标题','12312321',NULL,NULL,NULL,NULL),(2,'测试标题','12312321',NULL,NULL,NULL,NULL),(3,'测试标题','我是测试内容',NULL,NULL,NULL,NULL),(4,'测试标题','我是测试内容',NULL,NULL,NULL,NULL),(5,'测试标题','我能收到消息吗？',NULL,NULL,NULL,NULL),(6,'测试标题','我能收到消息吗？',NULL,NULL,NULL,NULL),(7,'测试标题','我能收到消息吗？',NULL,NULL,NULL,NULL),(8,'测试标题','我能收到消息吗？',NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `message_store` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -70,7 +137,7 @@ CREATE TABLE `sec_interface` (
 
 LOCK TABLES `sec_interface` WRITE;
 /*!40000 ALTER TABLE `sec_interface` DISABLE KEYS */;
-INSERT INTO `sec_interface` (`id`, `module_path`, `module_name`, `path`, `perm_type`, `description`, `version`, `use_flag`) VALUES (1,'/test','测试模块','/sayHello','1','你好啊','1.0.0','1'),(2,'/test','测试模块','/doUpdateInfo','1','更新用户信息','1.0.0','1'),(3,'/test','测试模块','/testPerms','0','测试权限','1.0.0','1');
+INSERT INTO `sec_interface` VALUES (1,'/test','测试模块','/sayHello','1','你好啊','1.0.0','1'),(2,'/test','测试模块','/doUpdateInfo','1','更新用户信息','1.0.0','1'),(3,'/test','测试模块','/testPerms','0','测试权限','1.0.0','1');
 /*!40000 ALTER TABLE `sec_interface` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -95,7 +162,7 @@ CREATE TABLE `sec_interface_perm` (
 
 LOCK TABLES `sec_interface_perm` WRITE;
 /*!40000 ALTER TABLE `sec_interface_perm` DISABLE KEYS */;
-INSERT INTO `sec_interface_perm` (`id`, `menu_id`, `interface_id`) VALUES (1,3,1),(2,4,1),(3,5,1),(4,6,1),(5,3,2),(6,4,2),(7,5,2),(8,3,3),(9,4,3),(10,5,3),(11,7,3);
+INSERT INTO `sec_interface_perm` VALUES (1,3,1),(2,4,1),(3,5,1),(4,6,1),(5,3,2),(6,4,2),(7,5,2),(8,3,3),(9,4,3),(10,5,3),(11,7,3);
 /*!40000 ALTER TABLE `sec_interface_perm` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -125,7 +192,7 @@ CREATE TABLE `sec_menu` (
 
 LOCK TABLES `sec_menu` WRITE;
 /*!40000 ALTER TABLE `sec_menu` DISABLE KEYS */;
-INSERT INTO `sec_menu` (`id`, `name`, `path`, `perms`, `type`, `sort`, `parent_id`, `use_flag`) VALUES (1,'用户管理','/user',NULL,'1',1,NULL,'1'),(2,'个人中心','/user/center',NULL,'2',1,1,'1'),(3,'浏览',NULL,'user:center:view','3',1,2,'1'),(4,'增加',NULL,'user:center:add','3',2,2,'1'),(5,'修改',NULL,'user:center:update','3',3,2,'1'),(6,'删除',NULL,'user:center:delete','3',4,2,'1'),(7,'测试',NULL,'user:center:test','3',5,2,'1');
+INSERT INTO `sec_menu` VALUES (1,'用户管理','/user',NULL,'1',1,NULL,'1'),(2,'个人中心','/user/center',NULL,'2',1,1,'1'),(3,'浏览',NULL,'user:center:view','3',1,2,'1'),(4,'增加',NULL,'user:center:add','3',2,2,'1'),(5,'修改',NULL,'user:center:update','3',3,2,'1'),(6,'删除',NULL,'user:center:delete','3',4,2,'1'),(7,'测试',NULL,'user:center:test','3',5,2,'1');
 /*!40000 ALTER TABLE `sec_menu` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -150,7 +217,7 @@ CREATE TABLE `sec_menu_role` (
 
 LOCK TABLES `sec_menu_role` WRITE;
 /*!40000 ALTER TABLE `sec_menu_role` DISABLE KEYS */;
-INSERT INTO `sec_menu_role` (`id`, `role_id`, `menu_id`) VALUES (1,1,3),(2,1,4),(3,2,3),(4,1,5),(5,1,6),(6,2,4);
+INSERT INTO `sec_menu_role` VALUES (1,1,3),(2,1,4),(3,2,3),(4,1,5),(5,1,6),(6,2,4);
 /*!40000 ALTER TABLE `sec_menu_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -165,7 +232,7 @@ CREATE TABLE `sec_role` (
   `id` int NOT NULL AUTO_INCREMENT COMMENT '角色编号',
   `name` varchar(128) DEFAULT NULL COMMENT '角色名称',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='角色表';
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='角色表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -174,7 +241,7 @@ CREATE TABLE `sec_role` (
 
 LOCK TABLES `sec_role` WRITE;
 /*!40000 ALTER TABLE `sec_role` DISABLE KEYS */;
-INSERT INTO `sec_role` (`id`, `name`) VALUES (1,'admin'),(2,'dev');
+INSERT INTO `sec_role` VALUES (1,'admin'),(2,'dev'),(8,'docs');
 /*!40000 ALTER TABLE `sec_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -199,7 +266,7 @@ CREATE TABLE `sec_role_user` (
 
 LOCK TABLES `sec_role_user` WRITE;
 /*!40000 ALTER TABLE `sec_role_user` DISABLE KEYS */;
-INSERT INTO `sec_role_user` (`id`, `role_id`, `user_id`) VALUES (1,1,1);
+INSERT INTO `sec_role_user` VALUES (1,1,1);
 /*!40000 ALTER TABLE `sec_role_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -231,8 +298,34 @@ CREATE TABLE `system_param` (
 
 LOCK TABLES `system_param` WRITE;
 /*!40000 ALTER TABLE `system_param` DISABLE KEYS */;
-INSERT INTO `system_param` (`id`, `param_name`, `param_desc`, `param_value`, `param_status`, `version`, `create_time`, `create_by`, `last_update_time`, `last_update_by`) VALUES (1,'multiple_login','是否允许同一账号可同时在不同设备上进行登录','1','0','1.0.0','2022-09-22 20:51:08','shiping.song','2022-09-22 20:51:08','shiping.song'),(2,'async_message','是否开启异步消息通知','0','0','1.0.0','2022-09-22 21:32:16','shiping.song','2022-09-22 21:32:16','shiping.song');
+INSERT INTO `system_param` VALUES (1,'multiple_login','是否允许同一账号可同时在不同设备上进行登录','1','0','1.0.0','2022-09-22 20:51:08','shiping.song','2022-09-22 20:51:08','shiping.song'),(2,'async_message','是否开启异步消息通知','0','0','1.0.0','2022-09-22 21:32:16','shiping.song','2022-09-22 21:32:16','shiping.song');
 /*!40000 ALTER TABLE `system_param` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `test_top`
+--
+
+DROP TABLE IF EXISTS `test_top`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `test_top` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '编号',
+  `time` varchar(128) DEFAULT NULL COMMENT '时间格式化',
+  `name` varchar(30) DEFAULT NULL COMMENT '名称',
+  `count` int DEFAULT NULL COMMENT '计数标识',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='测试库';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `test_top`
+--
+
+LOCK TABLES `test_top` WRITE;
+/*!40000 ALTER TABLE `test_top` DISABLE KEYS */;
+INSERT INTO `test_top` VALUES (1,'202209140946','张三',12),(2,'202209140947','李四',12),(3,'202209140952','张三',15),(4,'202209151000','王五',22),(5,'202209151001','张三',12),(6,'202209151003','王五',23),(7,'202209151004','赵六',12),(8,'202209151104','赵六',32);
+/*!40000 ALTER TABLE `test_top` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -256,7 +349,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` (`id`, `username`, `password`) VALUES (1,'admin','$2a$10$6W.o389nrrePP8F7M1fv..vUbCNuOD30/ZCvbTDFV5bVIc4TbgYUO');
+INSERT INTO `user` VALUES (1,'admin','$2a$10$6W.o389nrrePP8F7M1fv..vUbCNuOD30/ZCvbTDFV5bVIc4TbgYUO');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -282,7 +375,7 @@ CREATE TABLE `user_message` (
 
 LOCK TABLES `user_message` WRITE;
 /*!40000 ALTER TABLE `user_message` DISABLE KEYS */;
-INSERT INTO `user_message` (`id`, `user_id`, `message_id`, `push_flag`) VALUES (1,1,3,'0'),(2,1,4,'0'),(3,1,5,'0'),(4,1,6,'1'),(5,1,7,'1'),(6,1,8,'1');
+INSERT INTO `user_message` VALUES (1,1,3,'0'),(2,1,4,'0'),(3,1,5,'0'),(4,1,6,'1'),(5,1,7,'1'),(6,1,8,'1');
 /*!40000 ALTER TABLE `user_message` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -295,4 +388,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-10-04 15:16:30
+-- Dump completed on 2022-10-12 17:48:09
