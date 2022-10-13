@@ -2,7 +2,6 @@ package com.gitee.xiaosongstudy.hopeurlfilecenter.utils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
 
 /**
  * 文件工具类
@@ -15,6 +14,11 @@ public class FileUtil {
 
     private FileUtil() {
     }
+
+    /**
+     * 默认保留位数为2位
+     */
+    private static final int DEFAULT_SCALE = 2;
 
     /**
      * BIT 8位
@@ -32,13 +36,8 @@ public class FileUtil {
     /**
      * 定义GB的计算常量
      */
-    public static final BigDecimal GB = MB .multiply(KB);
+    public static final BigDecimal GB = MB.multiply(KB);
 
-
-    /**
-     * 格式化小数
-     */
-    private static final DecimalFormat DF = new DecimalFormat("0.00");
 
     /**
      * 获取文件扩展名
@@ -60,13 +59,18 @@ public class FileUtil {
     }
 
     /**
-     * 文件大小转换
+     * 文件大小转化
+     *
+     * @param size  大小
+     * @param scale 保留位数
+     * @param mode  小数处理策略
+     * @return 转化结果
      */
-    public static String getSize(BigDecimal size) {
+    public static String getSize(BigDecimal size, int scale, RoundingMode mode) {
         String resultSize;
-        BigDecimal gbResult = size.divide(GB, RoundingMode.CEILING);
-        BigDecimal mbResult = size.divide(MB, RoundingMode.CEILING);
-        BigDecimal kbResult = size.divide(KB, RoundingMode.CEILING);
+        BigDecimal gbResult = size.divide(GB, scale, mode);
+        BigDecimal mbResult = size.divide(MB, scale, mode);
+        BigDecimal kbResult = size.divide(KB, scale, mode);
 
         if (gbResult.compareTo(BigDecimal.ONE) >= 0) {
             //如果当前Byte的值大于等于1GB
@@ -81,6 +85,17 @@ public class FileUtil {
             resultSize = size + "B   ";
         }
         return resultSize;
+    }
+
+
+    /**
+     * 文件大小转化
+     *
+     * @param size 文件大小
+     * @return
+     */
+    public static String getSize(BigDecimal size) {
+        return getSize(size, DEFAULT_SCALE, RoundingMode.UP);
     }
 
     /**
@@ -101,6 +116,10 @@ public class FileUtil {
         } else {
             return FileType.TAG_OTHER.getDescription();
         }
+    }
+
+    public static void main(String[] args) {
+        System.out.println(FileUtil.getSize(new BigDecimal("22502193")));
     }
 
     /**
