@@ -2,6 +2,7 @@ package com.gitee.xiaosongstudy.hopeurlfilecenter.service.impl;
 
 import com.gitee.xiaosongstudy.hopeurlfilecenter.config.AppConfig;
 import com.gitee.xiaosongstudy.hopeurlfilecenter.constant.Globals;
+import com.gitee.xiaosongstudy.hopeurlfilecenter.core.TaskDispatcher;
 import com.gitee.xiaosongstudy.hopeurlfilecenter.entity.FileChunk;
 import com.gitee.xiaosongstudy.hopeurlfilecenter.service.FileChunkService;
 import com.gitee.xiaosongstudy.hopeurlfilecenter.service.FileLocalStorageService;
@@ -28,6 +29,9 @@ import java.util.List;
 @Service
 public class FileServiceImpl implements FileService {
 
+    @Resource(name = "myTaskExecutor")
+    private TaskDispatcher taskDispatcher;
+
     /**
      * 默认分片大小为20M
      */
@@ -43,9 +47,10 @@ public class FileServiceImpl implements FileService {
     private FileLocalStorageService fileLocalStorageService;
 
     @Override
-    public boolean uploadFile(FileChunk param) {
+    public boolean uploadFile(FileChunk param) throws IOException {
         String savePath = appConfig.getFile().getSavePath();
         String fullFileName = savePath + File.separator + param.getFilename();
+        param.setParentPath(savePath);
         // 单文件上传
         if (param.getTotalChunks() == 1) {
             return uploadSingleFile(fullFileName, param);
@@ -67,20 +72,24 @@ public class FileServiceImpl implements FileService {
      * @param param
      * @return
      */
-    private boolean uploadFileByRandomAccessFile(String fullFileName, FileChunk param) {
-        try (RandomAccessFile randomAccessFile = new RandomAccessFile(fullFileName, Globals.File.MODE_RW)) {
-            // 分片大小必须和前端匹配，否则上传会导致文件损坏
-            BigDecimal chunkSize = param.getChunkSize().compareTo(BigDecimal.ZERO) == 0 ? DEFAULT_CHUNK_SIZE : param.getChunkSize();
-            // 偏移量
-            BigDecimal offset = chunkSize.multiply(new BigDecimal(param.getChunkNumber() - 1));
-            // 定位到该分片的偏移量
-            randomAccessFile.seek(offset.longValue());
-            // 写入
-            randomAccessFile.write(param.getFile().getBytes());
-        } catch (IOException e) {
-            log.error("文件上传失败：" + e);
-            return false;
-        }
+    private boolean uploadFileByRandomAccessFile(String fullFileName, FileChunk param) throws IOException {
+        byte[] localBytes = param.getFile().getBytes();
+        taskDispatcher.execute(() -> {
+            try (RandomAccessFile randomAccessFile = new RandomAccessFile(fullFileName, Globals.File.MODE_RW)) {
+                // 分片大小必须和前端匹配，否则上传会导致文件损坏
+                BigDecimal chunkSize = param.getChunkSize().compareTo(BigDecimal.ZERO) == 0 ? DEFAULT_CHUNK_SIZE : param.getChunkSize();
+                // 偏移量
+                BigDecimal offset = chunkSize.multiply(new BigDecimal(param.getChunkNumber() - 1));
+                // 定位到该分片的偏移量
+                randomAccessFile.seek(offset.longValue());
+                // 写入
+                randomAccessFile.write(localBytes);
+            } catch (IOException e) {
+                log.error("文件上传失败：" + e);
+                throw new RuntimeException(e);
+            }
+        });
+
         return true;
     }
 

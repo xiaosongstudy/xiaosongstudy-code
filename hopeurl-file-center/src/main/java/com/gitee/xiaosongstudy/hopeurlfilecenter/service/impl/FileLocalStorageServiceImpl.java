@@ -12,8 +12,6 @@ import com.gitee.xiaosongstudy.hopeurlfilecenter.utils.FileUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import java.time.LocalDateTime;
-
 /**
 * @author hopeurl
 * @description 针对表【file_local_storage(文件存储)】的数据库操作Service实现
@@ -22,7 +20,6 @@ import java.time.LocalDateTime;
 @Service
 public class FileLocalStorageServiceImpl extends ServiceImpl<FileLocalStorageMapper, FileLocalStorage>
     implements FileLocalStorageService{
-    private static final String DEFAULT_OPERATOR = "hopeurl-file-center";
     @Override
     public void saveLocalStorage(FileChunk param) {
         LambdaQueryWrapper<FileLocalStorage> conditionWrappers = Wrappers.lambdaQuery(FileLocalStorage.class).eq(FileLocalStorage::getIdentifier, param.getIdentifier());
@@ -40,14 +37,11 @@ public class FileLocalStorageServiceImpl extends ServiceImpl<FileLocalStorageMap
                 name,
                 suffix,
                 param.getRelativePath(),
+                param.getParentPath(),
                 type,
                 FileUtil.getSize(param.getTotalSize()),
                 param.getIdentifier()
         );
-        localStorage.setCreateTime(LocalDateTime.now());
-        localStorage.setUpdatetime(localStorage.getCreateTime());
-        localStorage.setCreateBy(DEFAULT_OPERATOR);
-        localStorage.setUpdateBy(DEFAULT_OPERATOR);
         this.save(localStorage);
     }
 }

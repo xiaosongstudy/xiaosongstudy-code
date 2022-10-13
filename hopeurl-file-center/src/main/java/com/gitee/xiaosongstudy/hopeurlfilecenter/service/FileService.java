@@ -2,6 +2,7 @@ package com.gitee.xiaosongstudy.hopeurlfilecenter.service;
 
 import com.gitee.xiaosongstudy.hopeurlfilecenter.entity.FileChunk;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -16,7 +17,7 @@ public interface FileService {
      * @param param 文件上传参数
      * @return 上传结果
      */
-    boolean uploadFile(FileChunk param);
+    boolean uploadFile(FileChunk param) throws IOException;
 
     /**
      * 通过文件唯一标识和查询类型匹配目标分片

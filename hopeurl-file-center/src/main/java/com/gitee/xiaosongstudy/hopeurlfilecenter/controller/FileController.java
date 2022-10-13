@@ -53,7 +53,7 @@ public class FileController {
         // 判断文件存不存在
         if (list.size() == 0) {
             data.put("uploaded", false);
-            return new Result<>(200, "上传成功", data);
+            return new Result<>(200, "校验成功！", data);
         }
         // 处理单文件
         if (list.get(0).getTotalChunks() == 1) {
@@ -74,7 +74,7 @@ public class FileController {
 
 
     @PostMapping("/upload")
-    public Result<Object> chunkUpload(FileChunk param) {
+    public Result<Object> chunkUpload(FileChunk param) throws IOException {
         log.info("上传文件：{}", param);
         boolean flag = fileService.uploadFile(param);
         if (!flag) {

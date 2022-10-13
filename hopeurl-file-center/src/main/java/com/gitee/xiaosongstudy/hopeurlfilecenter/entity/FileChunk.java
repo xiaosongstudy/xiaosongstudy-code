@@ -1,9 +1,6 @@
 package com.gitee.xiaosongstudy.hopeurlfilecenter.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,10 +9,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
- * 
  * @TableName file_chunk
  */
-@TableName(value ="file_chunk")
+@TableName(value = "file_chunk")
 @Data
 public class FileChunk implements Serializable {
     /**
@@ -69,16 +65,21 @@ public class FileChunk implements Serializable {
     /**
      * 创建时间
      */
+    @TableField(value = "create_time",fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
     /**
      * 更新时间
      */
+    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 
 
     @TableField(exist = false)
     private MultipartFile file;
+
+    @TableField(exist = false)
+    private String parentPath;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
@@ -96,16 +97,16 @@ public class FileChunk implements Serializable {
         }
         FileChunk other = (FileChunk) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getFilename() == null ? other.getFilename() == null : this.getFilename().equals(other.getFilename()))
-            && (this.getChunkNumber() == null ? other.getChunkNumber() == null : this.getChunkNumber().equals(other.getChunkNumber()))
-            && (this.getChunkSize() == null ? other.getChunkSize() == null : this.getChunkSize().equals(other.getChunkSize()))
-            && (this.getCurrentChunkSize() == null ? other.getCurrentChunkSize() == null : this.getCurrentChunkSize().equals(other.getCurrentChunkSize()))
-            && (this.getTotalSize() == null ? other.getTotalSize() == null : this.getTotalSize().equals(other.getTotalSize()))
-            && (this.getTotalChunks() == null ? other.getTotalChunks() == null : this.getTotalChunks().equals(other.getTotalChunks()))
-            && (this.getIdentifier() == null ? other.getIdentifier() == null : this.getIdentifier().equals(other.getIdentifier()))
-            && (this.getRelativePath() == null ? other.getRelativePath() == null : this.getRelativePath().equals(other.getRelativePath()))
-            && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
-            && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()));
+                && (this.getFilename() == null ? other.getFilename() == null : this.getFilename().equals(other.getFilename()))
+                && (this.getChunkNumber() == null ? other.getChunkNumber() == null : this.getChunkNumber().equals(other.getChunkNumber()))
+                && (this.getChunkSize() == null ? other.getChunkSize() == null : this.getChunkSize().equals(other.getChunkSize()))
+                && (this.getCurrentChunkSize() == null ? other.getCurrentChunkSize() == null : this.getCurrentChunkSize().equals(other.getCurrentChunkSize()))
+                && (this.getTotalSize() == null ? other.getTotalSize() == null : this.getTotalSize().equals(other.getTotalSize()))
+                && (this.getTotalChunks() == null ? other.getTotalChunks() == null : this.getTotalChunks().equals(other.getTotalChunks()))
+                && (this.getIdentifier() == null ? other.getIdentifier() == null : this.getIdentifier().equals(other.getIdentifier()))
+                && (this.getRelativePath() == null ? other.getRelativePath() == null : this.getRelativePath().equals(other.getRelativePath()))
+                && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
+                && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()));
     }
 
     @Override
