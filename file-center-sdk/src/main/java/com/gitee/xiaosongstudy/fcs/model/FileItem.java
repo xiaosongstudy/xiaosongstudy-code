@@ -1,4 +1,4 @@
-package com.gitee.xiaosongstudy.fcs;
+package com.gitee.xiaosongstudy.fcs.model;
 
 import lombok.Getter;
 import lombok.Setter;
