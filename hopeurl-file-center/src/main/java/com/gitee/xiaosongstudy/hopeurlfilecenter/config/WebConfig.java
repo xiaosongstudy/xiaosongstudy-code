@@ -3,6 +3,7 @@ package com.gitee.xiaosongstudy.hopeurlfilecenter.config;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.annotation.Resource;
@@ -15,6 +16,7 @@ import javax.annotation.Resource;
  * @since 2022/10/12 14:24
  */
 @Configuration
+@EnableWebMvc
 public class WebConfig implements WebMvcConfigurer {
 
     @Resource

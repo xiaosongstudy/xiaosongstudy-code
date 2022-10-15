@@ -1,4 +1,4 @@
-package com.gitee.xiaosongstudy.hopeurlfilecenter.controller;
+package com.gitee.xiaosongstudy.hopeurlfilecenter.controller.user;
 
 import com.gitee.xiaosongstudy.hopeurlfilecenter.entity.FileChunk;
 import com.gitee.xiaosongstudy.hopeurlfilecenter.service.FileService;
