@@ -8,7 +8,7 @@ import java.io.Serializable;
 /**
  * 文件项
  * @author hopeurl
- * @email myhopeurlife@foxmail
+ * @email shiping.song
  * @since 2022/10/12 14:58
  */
 @Getter
