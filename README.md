@@ -16,6 +16,8 @@
 xxj-job开源项目示例代码（待完善，初步接触过，但是具体代码原理尚未仔细研究）
 ## request-invocation
 本demo提供了多种方式的请求响应示例代码，包含jdk原生、spring boot、netty等方式。
+参考链接：
+https://www.jianshu.com/p/29e38bcc8a1d
 ```txt
 2022/10/11
 今天初步完成了基于jdk原生api发送请求，目前支持get，post常用请求方式、支持单文件上传(待优化)，关于文件上传，此部分将联合

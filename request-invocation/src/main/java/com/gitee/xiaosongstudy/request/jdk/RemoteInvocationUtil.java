@@ -2,7 +2,7 @@ package com.gitee.xiaosongstudy.request.jdk;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.gitee.xiaosongstudy.request.bean.User;
+import com.gitee.xiaosongstudy.request.constant.Globals;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -26,37 +26,105 @@ public class RemoteInvocationUtil {
     /**
      * 连接超时时间，单位毫秒，默认值
      */
-    public static final int TIMEOUT = 5000;
+    private static final int TIMEOUT = 5000;
 
     private RemoteInvocationUtil() {
     }
 
-    public static void main(String[] args) {
-//        System.out.println(Objects.requireNonNull(RemoteInvocationUtil.class.getClassLoader().getResource("")).getPath());
-        System.out.println(RemoteInvocationUtil.postAttachment("http://localhost:9022/request/upload", new File("E:\\认证图片\\平台授权说明书_看图王.jpg")));
-//        test01();
+    /**
+     * 以 form表单形式发送请求-有返回值(默认为post请求)
+     *
+     * @param url           请求路径
+     * @param headersMap    协议头
+     * @param pathVariables get路径参数
+     * @param file          文件
+     * @param paramsMap     参数
+     * @param timeout       超时时间
+     * @param entityClz     相应字节码
+     * @param <T>           响应类型
+     * @return 目标类型
+     * @author shiping.song
+     * @date 2022/10/17 14:45
+     */
+    public static <T> T formForEntity(String url, Map<String, String> headersMap, Map<String, Object> pathVariables, File file, Map<String, Object> paramsMap, int timeout, Class<T> entityClz) {
+        if (null == entityClz) {
+            throw new IllegalArgumentException("实体类字节码不能为空！");
+        }
+        String resultStr = doFormRequest(url, HttpMethod.POST, headersMap, pathVariables, timeout, file, paramsMap);
+        if (entityClz == String.class) {
+            return (T) resultStr;
+        }
+        return JSON.parseObject(resultStr, entityClz);
     }
 
-    private static void test01() {
-        // 返回正常
-//        RemoteInvocationUtil.getForEntity("http://localhost:9022/request/sayHello", null);
-        // 返回正常
-//        User forEntity = RemoteInvocationUtil.getForEntity("http://localhost:9022/request/getJsonStr", User.class);
-//        System.out.println(forEntity);
-        Map<String, Object> pathVariables = new HashMap<>();
-        pathVariables.put("id", 1);
-        pathVariables.put("username", "张三");
-        // 在进行时间转化时后台需要额外做配置
-//        pathVariables.put("birthday", LocalDate.now());
-        System.out.println(RemoteInvocationUtil.getForEntity("http://localhost:9022/request/param", pathVariables, User.class));
-        System.out.println(RemoteInvocationUtil.getForEntity("http://localhost:9022/request/paramWithEntity", pathVariables, User.class));
-//        System.out.println(RemoteInvocationUtil.getForEntity("http://localhost:9022/request/param?id=1&username=%E5%BC%A0%E4%B8%89", null, User.class));
-        Map<String, Object> postPathVariables = new HashMap<>();
-        postPathVariables.put("param", "我是测试数据");
-        RemoteInvocationUtil.postForLocation("http://localhost:9022/request/postStr", postPathVariables);
-        User user = User.builder().id(20221010).username("里斯").build();
-        System.out.println(RemoteInvocationUtil.postForEntity("http://localhost:9022/request/postWithEntity", JSON.toJSONString(user), String.class));
+    public static <T> T formForEntity(String url, Map<String, String> headersMap, Map<String, Object> pathVariables, File file, Map<String, Object> paramsMap, Class<T> entityClz) {
+        return formForEntity(url, headersMap, pathVariables, file, paramsMap, TIMEOUT, entityClz);
     }
+
+    public static <T> T formForEntity(String url, Map<String, Object> pathVariables, File file, Map<String, Object> paramsMap, Class<T> entityClz) {
+        return formForEntity(url, null, pathVariables, file, paramsMap, entityClz);
+    }
+
+    public static <T> T formForEntity(String url, File file, Map<String, Object> paramsMap, Class<T> entityClz) {
+        return formForEntity(url, null, file, paramsMap, entityClz);
+    }
+
+    public static <T> T formForEntity(String url, Map<String, String> headersMap, Map<String, Object> pathVariables, File file, Class<T> entityClz) {
+        return formForEntity(url, headersMap, pathVariables, file, null, entityClz);
+    }
+
+    public static <T> T formForEntity(String url, Map<String, String> headersMap, Map<String, Object> pathVariables, Class<T> entityClz) {
+        return formForEntity(url, headersMap, pathVariables, null, entityClz);
+    }
+
+    /**
+     * 以 form表单形式发送请求-无返回值(默认为post请求)
+     *
+     * @param url           请求路径
+     * @param headersMap    协议头
+     * @param pathVariables get路径参数
+     * @param file          文件
+     * @param paramsMap     参数
+     * @param timeout       超时时间
+     * @author shiping.song
+     * @date 2022/10/17 14:47
+     */
+    public static void formForLocation(String url, Map<String, String> headersMap, Map<String, Object> pathVariables, File file, Map<String, Object> paramsMap, int timeout) {
+        doFormRequest(url, HttpMethod.POST, headersMap, pathVariables, timeout, file, paramsMap);
+    }
+
+    public static void formForLocation(String url, Map<String, Object> pathVariables, File file, Map<String, Object> paramsMap, int timeout) {
+        formForLocation(url, null, pathVariables, file, paramsMap, timeout);
+    }
+
+    public static void formForLocation(String url, File file, Map<String, Object> paramsMap, int timeout) {
+        formForLocation(url, null, file, paramsMap, timeout);
+    }
+
+    public static void formForLocation(String url, Map<String, Object> paramsMap, int timeout) {
+        formForLocation(url, null, paramsMap, timeout);
+    }
+
+    public static void formForLocation(String url, Map<String, Object> paramsMap) {
+        formForLocation(url, paramsMap, TIMEOUT);
+    }
+
+    public static void formForLocation(String url, HttpMethod httpMethod, Map<String, String> headersMap, Map<String, Object> pathVariables, Map<String, Object> paramsMap, int timeout) {
+        doFormRequest(url, httpMethod, headersMap, pathVariables, timeout, null, paramsMap);
+    }
+
+    public static void formForLocation(String url, HttpMethod httpMethod, Map<String, String> headersMap, Map<String, Object> pathVariables, Map<String, Object> paramsMap) {
+        formForLocation(url, httpMethod, headersMap, pathVariables, paramsMap, TIMEOUT);
+    }
+
+    public static void formForLocation(String url, HttpMethod httpMethod, Map<String, String> headersMap, Map<String, Object> paramsMap) {
+        formForLocation(url, httpMethod, headersMap, null, paramsMap);
+    }
+
+    public static void formForLocation(String url, HttpMethod httpMethod, Map<String, Object> paramsMap) {
+        formForLocation(url, httpMethod, null, paramsMap);
+    }
+
 
     /**
      * get请求-有返回值
@@ -116,7 +184,7 @@ public class RemoteInvocationUtil {
      */
     public static <T> T postForEntity(String url, Map<String, String> headersMap, String body, Map<String, Object> pathVariables, int timeout, Class<T> entityClz) {
         if (!isNotEmpty(headersMap)) {
-            headersMap = new HashMap<>();
+            headersMap = new HashMap<>(1);
         }
         headersMap.put(HttpHeaders.CONTENT_TYPE, MimeType.APPLICATION_JSON_VALUE);
         // 执行结果
@@ -194,7 +262,43 @@ public class RemoteInvocationUtil {
             // 如果当前请求有请求体
             writeBody(conn, body);
             // 如果请求携带附件信息
-            writeAttachment(conn, file);
+            writeAttachment(conn, file, null);
+            return resolveResponse(conn);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (null != conn) {
+                conn.disconnect();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 执行发送请求操作-依据form表单上传
+     *
+     * @param url           请求路径
+     * @param httpMethod    请求方法
+     * @param headersMap    请求头
+     * @param pathVariables 路径参数
+     * @param timeout       超时时间
+     * @param file          待上传文件
+     * @param paramsMap     参数集合
+     * @return
+     * @author shiping.song
+     * @date 2022/10/17 13:07
+     */
+    private static String doFormRequest(String url, HttpMethod httpMethod, Map<String, String> headersMap, Map<String, Object> pathVariables, int timeout, File file, Map<String, Object> paramsMap) {
+        assertHttpRequest(url);
+        HttpURLConnection conn = null;
+        try {
+            // 如果路径参数存在则需要修改请求地址
+            url = setPathVariables(url, pathVariables);
+            conn = getBaseConnection(url, httpMethod, timeout);
+            // 设置请求头
+            setHeaders(conn, headersMap);
+            // 如果请求携带附件信息
+            writeAttachment(conn, file, paramsMap);
             return resolveResponse(conn);
         } catch (Exception e) {
             e.printStackTrace();
@@ -232,30 +336,46 @@ public class RemoteInvocationUtil {
     /**
      * 发送附件
      *
-     * @param conn
-     * @param file
+     * @param conn      当前连接
+     * @param file      附件
+     * @param paramsMap 参数map
      * @throws IOException
      */
-    private static void writeAttachment(HttpURLConnection conn, File file) throws IOException {
+    private static void writeAttachment(HttpURLConnection conn, File file, Map<String, Object> paramsMap) throws IOException {
         if (null != file) {
             if (file.exists()) {
                 OutputStream outputStream = null;
                 DataInputStream in = null;
                 conn.setDoOutput(true);
-                String boundary = "----------" + System.currentTimeMillis();
+                String boundary = "" + System.currentTimeMillis();
                 conn.setRequestProperty(HttpHeaders.CONTENT_TYPE, HeaderValue.MULTIPART_FORM_DATA_VALUE + boundary);
-                // 完善附件请求内容
-                String sb = "--" +
-                        boundary + "\r\n" +
-                        "Content-Disposition: form-data;name=\"file\";filename=\"" + URLEncoder.encode(file.getName(), "utf-8") + "\r\n" +
-                        "Content-Type:application/octet-stream\r\n\r\n";
-                // 转化表头
-                byte[] head = sb.getBytes(StandardCharsets.UTF_8);
-                // 获取到输出流
+                StringBuilder paramSb = new StringBuilder();
+                // 如果参数不为空
+                if (isNotEmpty(paramsMap)) {
+                    for (Map.Entry<String, Object> entry : paramsMap.entrySet()) {
+                        paramSb.append(Globals.Separator.BOUNDARY_PREFIX)
+                                .append(boundary)
+                                .append(Globals.Separator.ENTER_AND_BANK)
+                                .append(HeaderValue.CONTENT_DISPOSITION_FORM_DATA_COMMON_PREFIX)
+                                .append(entry.getKey())
+                                .append(HeaderValue.CONTENT_DISPOSITION_FORM_DATA_COMMON_SUFFIX)
+                                .append(HeaderValue.CONTENT_TYPE_TEXT_CHARSET)
+                                .append(Globals.Separator.ENTER_AND_BANK)
+                                .append(Globals.Separator.ENTER_AND_BANK)
+                                .append(entry.getValue().toString())
+                                .append(Globals.Separator.ENTER_AND_BANK);
+                    }
+                }
+                paramSb.append(Globals.Separator.BOUNDARY_PREFIX)
+                        .append(boundary).append(Globals.Separator.ENTER_AND_BANK)
+                        .append(HeaderValue.CONTENT_DISPOSITION_FORM_DATA_FILE_PREFIX).append(URLEncoder.encode(file.getName(), "utf-8")).append(Globals.Separator.ENTER_AND_BANK)
+                        .append(HeaderValue.CONTENT_TYPE_OCTET_STREAM).append(HeaderValue.CONTENT_DISPOSITION_FORM_DATA_FILE_SUFFIX);
+                // 获取输出流
                 try {
                     outputStream = new DataOutputStream(conn.getOutputStream());
-                    // 输出表头
-                    outputStream.write(head);
+                    // 输出表头及参数
+                    System.out.println(paramSb);
+                    outputStream.write(paramSb.toString().getBytes(StandardCharsets.UTF_8));
                     // 文件正文内容 文件以流的形式传输
                     in = new DataInputStream(Files.newInputStream(file.toPath()));
                     int bytes;
@@ -851,8 +971,40 @@ public class RemoteInvocationUtil {
      */
     public static class HeaderValue {
         /**
+         * 分隔符
+         */
+        public static final String VALUE_SEPARATOR = ": ";
+        /**
          * 服务于文件上传时 Content-Type
          */
         public static final String MULTIPART_FORM_DATA_VALUE = "multipart/form-data;boundary=";
+        /**
+         * form-data 附件
+         */
+        public static final String CONTENT_DISPOSITION_FORM_DATA = HttpHeaders.CONTENT_DISPOSITION + VALUE_SEPARATOR + "form-data; ";
+        /**
+         * form-data 附件 文件名前缀
+         */
+        public static final String CONTENT_DISPOSITION_FORM_DATA_FILE_PREFIX = CONTENT_DISPOSITION_FORM_DATA + "name=\"file\"; filename=";
+        /**
+         * form-data 常规属性前缀
+         */
+        public static final String CONTENT_DISPOSITION_FORM_DATA_COMMON_PREFIX = CONTENT_DISPOSITION_FORM_DATA + "; name=\"";
+        /**
+         * form-data 附件 文件后缀
+         */
+        public static final String CONTENT_DISPOSITION_FORM_DATA_FILE_SUFFIX = "\r\n\r\n";
+        /**
+         * form-data 常规属性后缀
+         */
+        public static final String CONTENT_DISPOSITION_FORM_DATA_COMMON_SUFFIX = "\"\r\n";
+        /**
+         * content_type_octet_stream
+         */
+        public static final String CONTENT_TYPE_OCTET_STREAM = HttpHeaders.CONTENT_TYPE + VALUE_SEPARATOR + MimeType.APPLICATION_OCTET_STREAM_VALUE;
+        /**
+         * content_type_text_charset
+         */
+        public static final String CONTENT_TYPE_TEXT_CHARSET = HttpHeaders.CONTENT_TYPE + VALUE_SEPARATOR + MimeType.TEXT_PLAIN_VALUE + "; charset=utf-8";
     }
 }
