@@ -22,7 +22,9 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 public class JwtGenerator {
-    // 为什么类型是 Key. 因为我们通过第三方的 Jwt 生成 jwt字符串时候，需要使用 Key类型的对象
+    /**
+     * 为什么类型是 Key. 因为我们通过第三方的 Jwt 生成 jwt字符串时候，需要使用 Key类型的对象
+     */
     private final Key accessKey;
     private final Key refreshKey;
     private final long accessJwtExpire;

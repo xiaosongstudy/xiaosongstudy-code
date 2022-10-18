@@ -6,6 +6,7 @@ import com.gitee.xiaosongstudy.security.core.JwtGenerator;
 import com.gitee.xiaosongstudy.security.core.JwtParseInfo;
 import com.google.common.base.Joiner;
 import io.jsonwebtoken.Claims;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -38,7 +39,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private AppConfiguration appConfiguration;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
         AppConfiguration.Security security = appConfiguration.getSecurity();
         List<String> antMatchers = security.getAntMatchers();
         for (String path : antMatchers) {

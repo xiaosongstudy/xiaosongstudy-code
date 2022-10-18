@@ -26,7 +26,6 @@ public class GlobalAccessDecisionManager implements AccessDecisionManager {
      * @param authentication   当前登录用户信息
      * @param object           当前请求对象(FilterInvocation对象)
      * @param configAttributes FilterInvocationSecurityMetadataSource接口实现类中getAttributes方法的返回值
-     * @throws AccessDeniedException
      * @throws InsufficientAuthenticationException
      */
     @Override
