@@ -1,7 +1,10 @@
 package com.gitee.xiaosongstudy.fcs.utils;
 
 import com.gitee.xiaosongstudy.fcs.config.FileCenterConfig;
+import com.gitee.xiaosongstudy.fcs.model.FileItem;
 import com.gitee.xiaosongstudy.fcs.model.Result;
+
+import java.io.File;
 
 /**
  * 文件工具类 .<br>
@@ -18,28 +21,79 @@ public final class FileUtil {
     }
 
     /**
-     * TODO 上传文件
-     *
+     * @param fileItem 文件信息
      * @return
      * @author shiping.song
      * @date 2022/10/15 16:28
      */
-    public Result uploadFile() {
+    public Result singleUpload(FileItem fileItem) {
         return null;
     }
 
     /**
-     * TODO 下载文件
+     * TODO 分片上传
+     *
+     * @return
+     * @author shiping.song
+     * @date 2022/10/19 17:38
+     */
+    public Result partialUpload(FileItem fileItem) {
+        // 获取总文件大小
+        File currentFile = fileItem.getCurrentFile();
+        // 1. 获取连接
+        // 2. 分片
+        // 3.
+        return null;
+    }
+
+    /**
+     * TODO 加密单文件上传
+     *
+     * @param fileItem
+     * @return
+     * @author shiping.song
+     * @date 2022/10/19 17:41
+     */
+    public Result securitySimpleUpload(FileItem fileItem) {
+        return null;
+    }
+
+    /**
+     * TODO 安全加密分片上传
+     *
+     * @param fileItem
+     * @return
+     * @author shiping.song
+     * @date 2022/10/19 17:44
+     */
+    public Result securityPartialUpload(FileItem fileItem) {
+        return null;
+    }
+
+    /**
+     * TODO  单文件下载
      *
      * @return
      * @author shiping.song
      * @date 2022/10/15 16:29
      */
-    public Result downLoadFile() {
+    public Result singleDownload() {
         return null;
     }
 
     public FileCenterConfig getFileCenterConfig() {
         return fileCenterConfig;
+    }
+
+    /**
+     * 校验文件数据
+     *
+     * @param fileItem 待校验文件信息
+     * @return
+     * @author shiping.song
+     * @date 2022/10/19 17:56
+     */
+    private boolean validateFileItem(FileItem fileItem) {
+        return false;
     }
 }

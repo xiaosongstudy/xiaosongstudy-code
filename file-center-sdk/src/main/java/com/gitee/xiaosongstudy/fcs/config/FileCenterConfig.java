@@ -15,6 +15,16 @@ public final class FileCenterConfig implements Serializable {
     private static final long serialVersionUID = 4365932625909267064L;
 
     /**
+     *  服务器地址
+     */
+    private String serverAddress;
+
+    /**
+     * service api地址
+     */
+    private String serviceApiUrl;
+
+    /**
      * 登录账号
      */
     private String accessKey;
@@ -23,4 +33,9 @@ public final class FileCenterConfig implements Serializable {
      * 登录密码
      */
     private String accessSecret;
+
+    /**
+     * 是否开启加密传输
+     */
+    private Boolean security;
 }

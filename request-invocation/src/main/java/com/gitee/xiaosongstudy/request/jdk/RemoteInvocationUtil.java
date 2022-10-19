@@ -1,7 +1,6 @@
 package com.gitee.xiaosongstudy.request.jdk;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.gitee.xiaosongstudy.request.constant.Globals;
 
 import java.io.*;
@@ -139,7 +138,7 @@ public class RemoteInvocationUtil {
      */
     public static <T> T getForEntity(String url, Map<String, String> headersMap, Map<String, Object> pathVariables, int timeout, Class<T> entityClz) {
         String result = doRequest(url, HttpMethod.GET, headersMap, null, pathVariables, timeout, null);
-        return JSONObject.parseObject(result, entityClz);
+        return JSON.parseObject(result, entityClz);
     }
 
     public static <T> T getForEntity(String url, Map<String, String> headersMap, Map<String, Object> pathVariables, Class<T> entityClz) {
@@ -192,7 +191,7 @@ public class RemoteInvocationUtil {
         if (entityClz == String.class) {
             return (T) result;
         }
-        return JSONObject.parseObject(result, entityClz);
+        return JSON.parseObject(result, entityClz);
     }
 
     public static <T> T postForEntity(String url, Map<String, String> headersMap, String body, Map<String, Object> pathVariables, Class<T> entityClz) {
@@ -468,13 +467,14 @@ public class RemoteInvocationUtil {
      * @param conn
      * @return
      */
-    private static String resolveResponse(HttpURLConnection conn) {
+    private static String resolveResponse(HttpURLConnection conn) throws IOException {
         StringBuilder sb = new StringBuilder();
         InputStream inputStream = null;
+        BufferedInputStream bufferedInputStream = null;
         try {
             conn.connect();
             inputStream = conn.getInputStream();
-            BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
+            bufferedInputStream = new BufferedInputStream(inputStream);
             byte[] bytes = new byte[1024 * 4];
             int len;
             while ((len = bufferedInputStream.read(bytes)) != -1) {
@@ -492,6 +492,9 @@ public class RemoteInvocationUtil {
             }
             if (null != conn) {
                 conn.disconnect();
+            }
+            if (null != bufferedInputStream) {
+                bufferedInputStream.close();
             }
         }
         return sb.toString();
