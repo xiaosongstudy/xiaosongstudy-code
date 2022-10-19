@@ -15,7 +15,6 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <http.client>4.5.13</http.client>
   </properties>
 
   <dependencies>
@@ -27,10 +26,12 @@
       <scope>compile</scope>
     </dependency>
     <!-- http client -->
+    <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcomponents-client -->
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpcomponents-client</artifactId>
-      <version>${http.client}</version>
+      <version>4.5.13</version>
+      <type>pom</type>
     </dependency>
   </dependencies>
 </project>
