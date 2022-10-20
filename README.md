@@ -13,7 +13,15 @@
 ### source-track
 本项目为spring 系列源码追踪项目，以Spring Boot作为载体。
 1. BeanFactory与ApplicationContext
-> BeanFactory是ApplicationContext实现的一个顶级父类接口。
+> BeanFactory是ApplicationContext实现的一个顶级父类接口。BeanFactory定义的功能不是特别多，但是他的子实现类做了许多的事情。
+```java
+ConfigurableApplicationContext configurableApplicationContext = SpringApplication.run(SourceTrackApplication.class, args);
+```
+
+SpringApplication.run()方法是有返回值的，其返回值==ConfigurableApplicationContext==是ApplicationContext的子例，这里我们主要关注右侧的四个接口	
+
+![image-20221019232140450](F:\xiaosongstudy-code\images\image-20221019232140450.png)
+
 ### websocket-template
 之前也零零散散的编写过其他的案例代码，但是这一次想要更加系统的编写以及管理案例代码，第一个案例是与WebSocket的相关的。
 ### xxj-job-template

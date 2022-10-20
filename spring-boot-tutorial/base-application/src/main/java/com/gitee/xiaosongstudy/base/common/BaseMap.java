@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 /**
  * 自定义Map
+ * @author hopeurl
  */
 public class BaseMap extends HashMap<String, Object> {
 
