@@ -1,4 +1,4 @@
-package com.gitee.xiaosongstudy.hopeurlfilecenter.exception;
+package com.gitee.xiaosongstudy.fcs.exception;
 
 import com.gitee.xiaosongstudy.fcs.common.ResponseStatusEnum;
 

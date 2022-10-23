@@ -3,9 +3,9 @@ package com.gitee.xiaosongstudy.hopeurlfilecenter.handler;
 
 import com.gitee.xiaosongstudy.fcs.common.ResponseStatusEnum;
 import com.gitee.xiaosongstudy.fcs.model.Result;
-import com.gitee.xiaosongstudy.hopeurlfilecenter.exception.BusinessException;
-import com.gitee.xiaosongstudy.hopeurlfilecenter.exception.BusinessParamException;
-import com.gitee.xiaosongstudy.hopeurlfilecenter.exception.UnAuthenticationException;
+import com.gitee.xiaosongstudy.fcs.exception.BusinessException;
+import com.gitee.xiaosongstudy.fcs.exception.BusinessParamException;
+import com.gitee.xiaosongstudy.fcs.exception.UnAuthenticationException;
 import com.gitee.xiaosongstudy.hopeurlfilecenter.utils.ExceptionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

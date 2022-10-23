@@ -73,6 +73,7 @@ public class WebSocketServer {
      */
     @OnMessage
     public void onMessage(String message, @PathParam("userId") Long userId) {
+        log.info(message);
         if (PING.equals(message)) {
             log.info("收到来自于userId【{}】的心跳{}", userId, message);
             sendMsg(userId,PONG);

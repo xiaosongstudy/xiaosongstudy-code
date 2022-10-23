@@ -1,5 +1,6 @@
 package com.gitee.xiaosongstudy.fcs.utils;
 
+import com.gitee.xiaosongstudy.fcs.asserts.BusinessAssert;
 import com.gitee.xiaosongstudy.fcs.config.FileCenterConfig;
 import com.gitee.xiaosongstudy.fcs.model.FileItem;
 import com.gitee.xiaosongstudy.fcs.model.Result;
@@ -40,10 +41,25 @@ public final class FileUtil {
     public Result partialUpload(FileItem fileItem) {
         // 获取总文件大小
         File currentFile = fileItem.getCurrentFile();
+        assertFileCenterConfig();
         // 1. 获取连接
+
         // 2. 分片
         // 3.
         return null;
+    }
+
+    /**
+     *  校验文件中心代码
+     * @author shiping.song
+     * @date 2022/10/21 16:41
+     */
+    private void assertFileCenterConfig() {
+        String serverAddress = fileCenterConfig.getServerAddress();
+        BusinessAssert.hasText(serverAddress, "服务地址为空！");
+        String serviceApiUrl = fileCenterConfig.getServiceApiUrl();
+        BusinessAssert.hasText(serviceApiUrl,"请求资源为空！");
+
     }
 
     /**

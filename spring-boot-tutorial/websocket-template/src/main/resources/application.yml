@@ -18,8 +18,8 @@ spring:
         max-idle: 8
         min-idle: 2
     port: 6379
-    password: admin
-    host: 192.168.121.128
+    password: admin123
+    host: 192.168.30.131
 mybatis-plus:
   mapper-locations: classpath:mappers/**/*.xml
   configuration:
