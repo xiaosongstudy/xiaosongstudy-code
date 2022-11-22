@@ -1,10 +1,7 @@
 package com.gitee.xiaosongstudy.security.test;
 
 import com.alibaba.fastjson.JSON;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +12,7 @@ import java.util.List;
  * @author hopeurl@shiping.song
  * @date 2022/10/3 21:48
  */
+@Builder
 public class Demo01 {
 
     private Integer id;
