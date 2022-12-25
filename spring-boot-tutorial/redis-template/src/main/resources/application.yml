@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: redis-template
+  redis:
+    lettuce:
+      pool:
+        max-active: 8
+        min-idle: 2
+    host: 192.168.121.132
+    password: admin123
