@@ -1,2 +1,4 @@
-package com.gitee.xiaosongstudy.sdk.vo;public class Response {
+package com.gitee.xiaosongstudy.sdk.vo;
+
+public class Response {
 }
