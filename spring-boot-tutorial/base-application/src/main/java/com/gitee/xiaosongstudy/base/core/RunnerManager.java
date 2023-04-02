@@ -29,7 +29,7 @@ public class RunnerManager implements CommandLineRunner {
     private TaskDispatcher taskDispatcher;
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start("开始初始化系统环境");
         Collection<RunnerLine> beansOfType = springContextUtils.getBeansOfType(RunnerLine.class);

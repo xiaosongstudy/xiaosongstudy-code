@@ -139,9 +139,7 @@ public class CanalClient implements InitializingBean {
      */
     private Map<String, String> integerColumn(List<CanalEntry.Column> columns) {
         final Map<String, String> data = new HashMap<>(columns.size() / 2);
-        columns.forEach(column -> {
-            data.put(column.getName(), column.getValue());
-        });
+        columns.forEach(column -> data.put(column.getName(), column.getValue()));
         return data.isEmpty() ? null : data;
     }
 }

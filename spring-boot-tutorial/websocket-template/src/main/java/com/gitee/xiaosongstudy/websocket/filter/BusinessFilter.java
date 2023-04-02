@@ -2,7 +2,7 @@ package com.gitee.xiaosongstudy.websocket.filter;
 
 
 import com.alibaba.fastjson.JSON;
-import com.gitee.xiaosongstudy.base.core.UnAuthenticationException;
+import com.gitee.xiaosongstudy.base.core.exception.UnAuthenticationException;
 import com.gitee.xiaosongstudy.websocket.constant.Globals;
 import com.gitee.xiaosongstudy.base.container.StringContainer;
 import com.gitee.xiaosongstudy.websocket.core.RequestStore;

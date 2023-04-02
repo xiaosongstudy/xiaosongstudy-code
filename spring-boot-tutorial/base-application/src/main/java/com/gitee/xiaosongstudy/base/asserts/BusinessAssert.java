@@ -1,7 +1,7 @@
 package com.gitee.xiaosongstudy.base.asserts;
 
 
-import com.gitee.xiaosongstudy.base.core.BusinessException;
+import com.gitee.xiaosongstudy.base.core.exception.BusinessException;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;

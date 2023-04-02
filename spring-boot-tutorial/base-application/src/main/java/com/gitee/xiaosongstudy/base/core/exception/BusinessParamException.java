@@ -1,4 +1,4 @@
-package com.gitee.xiaosongstudy.base.core;
+package com.gitee.xiaosongstudy.base.core.exception;
 
 /**
  * 业务参数异常 .<br>

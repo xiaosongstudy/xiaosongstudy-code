@@ -7,7 +7,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * 这是类注释.<br>
+ * 全局请求响应.<br>
  *
  * @author shiping.song
  * @date 2022/10/15 16:22

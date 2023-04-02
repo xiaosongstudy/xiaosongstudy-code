@@ -1,6 +1,9 @@
 package com.gitee.xiaosongstudy.base.handler;
 
 import com.gitee.xiaosongstudy.base.core.*;
+import com.gitee.xiaosongstudy.base.core.exception.BusinessException;
+import com.gitee.xiaosongstudy.base.core.exception.BusinessParamException;
+import com.gitee.xiaosongstudy.base.core.exception.UnAuthenticationException;
 import com.gitee.xiaosongstudy.base.utils.ExceptionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

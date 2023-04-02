@@ -1,4 +1,4 @@
-package com.gitee.xiaosongstudy.base.core;
+package com.gitee.xiaosongstudy.base.core.exception;
 
 /**
  * 业务异常类 .<br>

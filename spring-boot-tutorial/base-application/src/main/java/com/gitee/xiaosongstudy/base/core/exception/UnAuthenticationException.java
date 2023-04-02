@@ -1,4 +1,6 @@
-package com.gitee.xiaosongstudy.base.core;
+package com.gitee.xiaosongstudy.base.core.exception;
+
+import com.gitee.xiaosongstudy.base.core.ResponseStatusEnum;
 
 /**
  * 未认证异常 .<br>

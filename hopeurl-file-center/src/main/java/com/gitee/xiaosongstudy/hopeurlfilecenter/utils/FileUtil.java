@@ -146,8 +146,8 @@ public class FileUtil {
          * 其他
          */
         TAG_OTHER("", "其他");
-        private String types;
-        private String description;
+        private final String types;
+        private final String description;
 
         FileType(String types, String description) {
             this.types = types;
@@ -158,16 +158,8 @@ public class FileUtil {
             return types;
         }
 
-        public void setTypes(String types) {
-            this.types = types;
-        }
-
         public String getDescription() {
             return description;
-        }
-
-        public void setDescription(String description) {
-            this.description = description;
         }
 
         @Override

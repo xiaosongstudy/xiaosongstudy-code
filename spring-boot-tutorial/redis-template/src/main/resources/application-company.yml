@@ -1,0 +1,8 @@
+spring:
+  redis:
+    lettuce:
+      pool:
+        max-active: 8
+        min-idle: 2
+    host: 192.168.30.131
+    password: admin123
