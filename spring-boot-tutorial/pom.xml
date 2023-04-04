@@ -14,6 +14,7 @@
         <module>canal-cache-sync</module>
         <module>xxl-job-template</module>
         <module>rpc-tutorial</module>
+        <module>tencent-ocr-template</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -110,6 +111,13 @@
                 <groupId>com.gitee.xiaosongstudy</groupId>
                 <artifactId>base-application</artifactId>
                 <version>${base.application.version}</version>
+            </dependency>
+
+            <!-- 腾讯云ocr-sdk -->
+            <dependency>
+                <groupId>com.tencentcloudapi</groupId>
+                <artifactId>tencentcloud-sdk-java-ocr</artifactId>
+                <version>3.1.699</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
