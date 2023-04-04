@@ -6,7 +6,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.gitee.xiaosongstudy.base.asserts.BusinessAssert;
+import com.gitee.xiaosongstudy.base.asserts.Asserts;
 import com.gitee.xiaosongstudy.base.container.StringContainer;
 import com.gitee.xiaosongstudy.base.core.Request;
 import com.gitee.xiaosongstudy.base.core.Result;
@@ -63,11 +63,11 @@ public class WebSocketController {
     @PostMapping("/login")
     public Result login(@RequestBody Request request) {
         User user = JSON.parseObject(request.getData(), User.class);
-        BusinessAssert.notNull(user, "请求对象为空！");
+        Asserts.notNull(user, "请求对象为空！");
         LambdaQueryWrapper<User> lambdaQueryWrapper = Wrappers.lambdaQuery(User.class).eq(User::getUsername, user.getUsername());
         User one = userService.getOne(lambdaQueryWrapper);
-        BusinessAssert.notNull(one, "用户名或者密码错误！");
-        BusinessAssert.eq(MD5Util.removeSalt(one.getPassword()), MD5Util.encode(user.getPassword()), "用户名或者密码错误！");
+        Asserts.notNull(one, "用户名或者密码错误！");
+        Asserts.eq(MD5Util.removeSalt(one.getPassword()), MD5Util.encode(user.getPassword()), "用户名或者密码错误！");
         UserVo userVo = new UserVo();
         BeanUtils.copyProperties(user,userVo);
         userVo.setPassword(null);
@@ -88,11 +88,11 @@ public class WebSocketController {
     @PostMapping("/publishAnnouncement/{userId}")
     public Result publishAnnouncement(@RequestBody Request request, @PathVariable Long userId) {
         MessageStore messageStore = JSONObject.parseObject(request.getData(), MessageStore.class);
-        BusinessAssert.notNull(messageStore, "公告内容为空！");
+        Asserts.notNull(messageStore, "公告内容为空！");
         // 开始推送信息
         // 保存消息
         messageStoreService.save(messageStore);
-        BusinessAssert.notNull(messageStore.getId(), "消息编号为空！");
+        Asserts.notNull(messageStore.getId(), "消息编号为空！");
         // 建立用户消息关联
         UserMessage userMessage = new UserMessage();
         userMessage.setUserId(userId);

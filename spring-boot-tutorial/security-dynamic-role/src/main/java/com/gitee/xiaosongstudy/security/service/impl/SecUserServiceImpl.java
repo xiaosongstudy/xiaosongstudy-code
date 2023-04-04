@@ -3,7 +3,7 @@ package com.gitee.xiaosongstudy.security.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.gitee.xiaosongstudy.base.asserts.BusinessAssert;
+import com.gitee.xiaosongstudy.base.asserts.Asserts;
 import com.gitee.xiaosongstudy.security.constant.Globals;
 import com.gitee.xiaosongstudy.security.core.JwtGenerator;
 import com.gitee.xiaosongstudy.security.entity.SecUser;
@@ -48,9 +48,9 @@ public class SecUserServiceImpl extends ServiceImpl<SecUserMapper, SecUser>
     public Map<String, Object> login(SecUser secUser) {
         LambdaQueryWrapper<SecUser> nameQueryWrapper = Wrappers.lambdaQuery(SecUser.class).eq(SecUser::getUsername, secUser.getUsername());
         SecUser secUserInfo = secUserMapper.selectOne(nameQueryWrapper);
-        BusinessAssert.notNull(secUserInfo, "用户名或者密码错误！");
+        Asserts.notNull(secUserInfo, "用户名或者密码错误！");
         // 如果匹配不上就报错
-        BusinessAssert.isTure(passwordEncoder.matches(secUser.getPassword(), secUserInfo.getPassword()), "用户名或者密码错误！");
+        Asserts.isTure(passwordEncoder.matches(secUser.getPassword(), secUserInfo.getPassword()), "用户名或者密码错误！");
         // 获取用户的权限信息
         List<String> perms = secMenuService.listPermsByUserId(secUserInfo.getId());
         String permString = Joiner.on(",").join(perms);

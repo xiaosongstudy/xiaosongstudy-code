@@ -15,9 +15,9 @@ import java.util.Collection;
  *
  * @author 宋世平 email:2453332538@qq.com 2022/3/28
  **/
-public class BusinessAssert {
+public class Asserts {
 
-    private BusinessAssert() {
+    private Asserts() {
     }
 
     /**

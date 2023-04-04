@@ -1,6 +1,6 @@
 package com.gitee.xiaosongstudy.security.core;
 
-import com.gitee.xiaosongstudy.base.asserts.BusinessAssert;
+import com.gitee.xiaosongstudy.base.asserts.Asserts;
 import com.gitee.xiaosongstudy.security.config.AppProperties;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +31,7 @@ public class JwtGenerator {
     private final long refreshJwtExpire;
 
     public JwtGenerator(AppProperties appProperties) {
-        BusinessAssert.notNull(appProperties, "核心配置文件注入失败");
+        Asserts.notNull(appProperties, "核心配置文件注入失败");
         accessKey = new SecretKeySpec(Base64.getDecoder().decode(appProperties.getJwt().getAccessKey()), "HmacSHA512");
         refreshKey = new SecretKeySpec(Base64.getDecoder().decode(appProperties.getJwt().getRefreshKey()), "HmacSHA512");
         accessJwtExpire = appProperties.getJwt().getAccessTokenExpire();

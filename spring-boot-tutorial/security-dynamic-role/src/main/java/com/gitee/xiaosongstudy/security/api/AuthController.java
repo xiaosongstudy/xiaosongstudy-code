@@ -1,7 +1,7 @@
 package com.gitee.xiaosongstudy.security.api;
 
 import com.alibaba.fastjson.JSON;
-import com.gitee.xiaosongstudy.base.asserts.BusinessAssert;
+import com.gitee.xiaosongstudy.base.asserts.Asserts;
 import com.gitee.xiaosongstudy.base.core.Request;
 import com.gitee.xiaosongstudy.base.core.Result;
 import com.gitee.xiaosongstudy.security.entity.SecUser;
@@ -34,9 +34,9 @@ public class AuthController {
     @PostMapping("/login")
     public Result login(@RequestBody Request request) {
         SecUser secUser = JSON.parseObject(request.getData(), SecUser.class);
-        BusinessAssert.notNull(secUser, "用户信息为空！");
-        BusinessAssert.notNull(secUser.getUsername(), "用户名为空！");
-        BusinessAssert.notNull(secUser.getPassword(), "密码为空！");
+        Asserts.notNull(secUser, "用户信息为空！");
+        Asserts.notNull(secUser.getUsername(), "用户名为空！");
+        Asserts.notNull(secUser.getPassword(), "密码为空！");
         return Result.success(JSON.toJSONString(secUserService.login(secUser)));
     }
 }
