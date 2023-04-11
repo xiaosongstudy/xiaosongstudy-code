@@ -1,0 +1,21 @@
+server:
+  port: 8084
+spring:
+  application:
+    name: user-center
+  session:
+    # session会话时间，单位/秒，这里的取值为一天
+    timeout: 86400
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/project_accumulation?serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-init-sql: select 1
+mybatis-plus:
+  mapper-locations: classpath:mappers/**/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

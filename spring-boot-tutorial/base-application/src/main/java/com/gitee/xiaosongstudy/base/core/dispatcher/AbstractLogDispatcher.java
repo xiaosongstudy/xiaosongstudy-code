@@ -47,7 +47,19 @@ public abstract class AbstractLogDispatcher<T, V, M> extends AbstractDispatcher<
     }
 
     @Override
-    public V executeAndGet(CallBackInterface<T, V> callBackInterface) {
-        return null;
+    public T executeAndGet(CallBackInterface<T, V> callBackInterface) {
+        // 前置校验会抛出异常，阻断请求的执行
+        this.preValidate();
+        try {
+            return callBackInterface.callBack();
+        } catch (CallBackFailException e) {
+            log.error(AbstractDispatcher.class.getName(), e);
+            this.handleCallBackFail();
+            return null;
+        } finally {
+            // 进行日志校验时不允许抛错异常，否则会影响正常记录日志，后置校验更多的是起着警醒作用
+            M logObj = this.postValidate();
+            this.persistence(logObj);
+        }
     }
 }

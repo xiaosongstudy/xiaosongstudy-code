@@ -15,7 +15,7 @@ public class ThreadUtil {
      * @param threadId 线程编号
      * @return 目标线程
      */
-    public static Thread getThreadByThreadId(long threadId) {
+    public static Thread getThreadById(long threadId) {
         ThreadGroup group = Thread.currentThread().getThreadGroup();
         while (group != null) {
             Thread[] threads = new Thread[(int) (group.activeCount() * 1.2)];

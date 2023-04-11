@@ -51,6 +51,6 @@ public abstract class AbstractDispatcher<T, V, M> {
      * @author shiping.song
      * @date 2023/4/2 11:01
      */
-    public abstract V executeAndGet(CallBackInterface<T, V> callBackInterface);
+    public abstract T executeAndGet(CallBackInterface<T, V> callBackInterface);
 
 }
