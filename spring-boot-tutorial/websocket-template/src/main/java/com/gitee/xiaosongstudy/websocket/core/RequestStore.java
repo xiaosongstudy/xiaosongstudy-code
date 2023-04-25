@@ -14,7 +14,7 @@ public class RequestStore {
     /**
      * 用户仓库
      */
-    public static final ThreadLocal<UserVo> USER_STORE = new ThreadLocal<>();
+    private static final ThreadLocal<UserVo> USER_STORE = new ThreadLocal<>();
 
     private RequestStore() {
 
@@ -31,9 +31,19 @@ public class RequestStore {
 
     /**
      * 设置当前登录用户信息
+     *
      * @param userVo 用户视图对象
      */
     public static void setLoginUser(UserVo userVo) {
         USER_STORE.set(userVo);
+    }
+
+    /**
+     * 销毁的方法
+     * @author shiping.song
+     * @date 2023/4/17 0:04
+     */
+    public static void destroy() {
+        USER_STORE.remove();
     }
 }
