@@ -4,6 +4,6 @@ spring:
       pool:
         max-idle: 8
         min-idle: 2
-    port: 6666
+    port: 6379
     password: lzvrzone
-    host: 124.222.213.67
+    host: localhost

@@ -1,0 +1,7 @@
+application:
+  mysql:
+    username: root
+    password: admin123
+    url: jdbc:mysql://localhost:3306/spring_boot_tutorial?serverTimezone=Asia/Shanghai
+    # 横杠转驼峰暂时还不知道如何处理
+    driverClass: com.mysql.cj.jdbc.Driver

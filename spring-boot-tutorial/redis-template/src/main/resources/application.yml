@@ -1,3 +1,4 @@
+
 spring:
   application:
     name: redis-template
@@ -6,5 +7,7 @@ spring:
       pool:
         max-active: 8
         min-idle: 2
-    host: 192.168.121.132
-    password: admin123
+    host: localhost
+    password: lzvrzone
+server:
+  port: 9093

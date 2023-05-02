@@ -10,6 +10,7 @@ import java.io.Serializable;
 
 /**
  * 用户表
+ * @author songshiping
  * @TableName user
  */
 @TableName(value ="user")

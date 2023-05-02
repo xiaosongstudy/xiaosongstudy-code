@@ -17,6 +17,7 @@
         <module>tencent-ocr-template</module>
         <module>project_accumulation</module>
         <module>develop-utils</module>
+        <module>xml-demo</module>
     </modules>
     <packaging>pom</packaging>
 

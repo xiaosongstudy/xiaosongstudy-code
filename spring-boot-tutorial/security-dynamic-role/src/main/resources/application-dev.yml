@@ -7,6 +7,9 @@ spring:
         max-wait: -1
         # 连接池最大阻塞等待时间(使用负值表示没有限制)
         max-active: 1000
-    port: 6666
+    port: 6379
     password: lzvrzone
-    host: 124.222.213.67
+    host: localhost
+
+server:
+  port: 9099
