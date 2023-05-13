@@ -1,4 +1,4 @@
-package com.gitee.xiaosongstudy.tencent;
+package com.gitee.xiaosongstudy;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

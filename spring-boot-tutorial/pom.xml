@@ -18,6 +18,7 @@
         <module>project_accumulation</module>
         <module>develop-utils</module>
         <module>xml-demo</module>
+        <module>poi-template</module>
     </modules>
     <packaging>pom</packaging>
 
