@@ -19,6 +19,7 @@
         <module>develop-utils</module>
         <module>xml-demo</module>
         <module>poi-template</module>
+        <module>juc-template</module>
     </modules>
     <packaging>pom</packaging>
 

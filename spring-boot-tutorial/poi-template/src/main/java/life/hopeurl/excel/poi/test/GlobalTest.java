@@ -17,6 +17,7 @@ import org.apache.poi.ss.usermodel.DataFormat;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.DataValidation;
 import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Hyperlink;
@@ -26,6 +27,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.ss.util.CellReference;
@@ -33,6 +35,7 @@ import org.apache.poi.ss.util.CellUtil;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -411,6 +414,59 @@ public class GlobalTest {
         try (OutputStream fileOut = Files.newOutputStream(Paths.get(DIR + "testSetCellProperties.xlsx"))) {
             workbook.write(fileOut);
         }
+        workbook.close();
+    }
+
+    /**
+     * 测试设置单元格背景颜色
+     *
+     * @date 2023/5/16 22:36
+     */
+    @Test
+    public void testSetCellBackgroundColor() throws IOException {
+        // 创建一个工作簿对象
+        Workbook workbook = new XSSFWorkbook();
+
+// 创建一个工作表对象
+        Sheet sheet = workbook.createSheet("testSetCellBackgroundColor");
+
+// 创建一个行对象
+        Row row = sheet.createRow(0);
+
+// 创建一个单元格对象
+        Cell cell = row.createCell(0);
+
+// 创建一个单元格样式对象
+        CellStyle style = workbook.createCellStyle();
+
+// 设置背景颜色为红色
+        style.setFillForegroundColor(IndexedColors.BLUE.getIndex());
+        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+// 将单元格样式应用到单元格
+        cell.setCellStyle(style);
+
+        Cell twoCell = row.createCell(1);
+        try (OutputStream fileOut = Files.newOutputStream(Paths.get(DIR + "testSetCellBackgroundColor.xlsx"))) {
+            workbook.write(fileOut);
+        }
+        workbook.close();
+    }
+
+    /**
+     * 获取单元格样式
+     *
+     * @date 2023/5/16 23:04
+     */
+    @Test
+    public void testGetCellStyle() throws IOException{
+        Workbook workbook = WorkbookFactory.create(new File(DIR + "testSetCellBackgroundColor.xlsx"));
+        Row row = workbook.getSheetAt(0).getRow(0);
+        CellStyle templateCellStyle = row.getCell(0).getCellStyle();
+        Cell twoCell = row.createCell(2);
+        twoCell.setCellStyle(templateCellStyle);
+        twoCell.setCellValue("我是测试数据");
+        workbook.write(Files.newOutputStream(Paths.get(DIR + "testSetCellBackground.xlsx")));
         workbook.close();
     }
 }

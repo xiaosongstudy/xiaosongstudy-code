@@ -1,6 +1,5 @@
 package com.gitee.xiaosongstudy;
 
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
@@ -13,6 +12,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class TencentOcrTemplateApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(TencentOcrTemplateApplication.class, args);
+//        System.getenv().forEach((k, v) -> {
+//            System.out.println(k);
+//            System.out.println(v);
+//            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+//        });
+        System.out.println(System.getenv("tencentOcrAppSecretId"));
+
+//        SpringApplication.run(TencentOcrTemplateApplication.class, args);
     }
 }
