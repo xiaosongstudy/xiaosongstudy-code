@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * excel工具类
@@ -80,6 +81,26 @@ public class ExcelUtils {
             return cell.getLocalDateTimeCellValue();
         }
         return null;
+    }
+
+
+    /**
+     * 读取excel单元格，同时捕获异常
+     *
+     * @param cellConsumer      单元格处理流程
+     * @param cell              当前操作单元格
+     * @param throwExceptionClz 捕获到当前类型到异常时则直接抛出
+     * @date 2023/6/8 00:11
+     */
+    public void readCellAndWrapException(Consumer<Cell> cellConsumer, Cell cell, Class<? extends Exception> throwExceptionClz) {
+        try {
+            cellConsumer.accept(cell);
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (Objects.nonNull(throwExceptionClz) && e.getClass() == throwExceptionClz) {
+                throw e;
+            }
+        }
     }
 
 }
