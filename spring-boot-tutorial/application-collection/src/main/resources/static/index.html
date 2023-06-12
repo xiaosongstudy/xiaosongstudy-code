@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <link rel="stylesheet" href="css/element-plus.css" />
+</head>
+
+<body>
+    <div id="app">
+        {{ message }}
+    </div>
+    <script type="module">
+        import { createApp } from './js/vue3.js';
+        import common from './js/common.js';
+        import lucene from './api/common/api.lucene.js';
+        import router from './js/router/index.js';
+
+        const person = {
+            username: 'admin',
+            password: 'password hash',
+        }
+        createApp({
+            data() {
+                return {
+                    message: 'hello vue!'
+                }
+            }
+        }).mount('#app')
+    </script>
+</body>
+
+</html>
