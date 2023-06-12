@@ -1,4 +1,6 @@
 import common from "../common.js";
+import { pathToRegexp, match, parse, compile } from '../path-to-regexp/index.js';
+import { routePaths } from "./modules/index.js";
 /**
  * 路由js
  */
@@ -9,7 +11,19 @@ export default {
      * @param {string} path 请求路径
      */
     pathVariables: path => {
-
+        if (path && routePaths && routePaths.length > 0) {
+            let targetRoutePath = routePaths.find(routePath => {
+                console.log('123', routePath, pathToRegexp(routePath));
+                path.search(pathToRegexp(routePath)) != -1
+            })
+            if (targetRoutePath) {
+                let paramFinder = match(targetRoutePath, { decode: decodeURIComponent })
+                console.log(paramFinder, 'paramFinder');
+                return paramFinder(path).params
+            } else {
+                throw Error('非法路由，请检查')
+            }
+        }
     },
     /**
      * 路由到指定路径
@@ -53,17 +67,3 @@ const getQueryVariable = variable => {
     }
     return paramObj;
 }
-
-/**
- * 网站后缀
- */
-const suffix = /.[a-z]+/
-
-/**
- * 路由正则匹配规则
- */
-const route = /(\/[a-zA-Z\-]+)+(\/:(\w+)(\??)(\(([^)]+)\))?)?/
-
-const test = '/test/api/123/:type'
-
-console.log('test', test.match(route));

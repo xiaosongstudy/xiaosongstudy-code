@@ -1,4 +1,3 @@
-import constnt from '../../constant.js'
 /**
  * lucene 路由模块
  */
