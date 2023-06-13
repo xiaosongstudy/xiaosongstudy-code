@@ -161,7 +161,7 @@ public class TableResolve {
     private static boolean isBlankLine(Row row) {
         boolean isBlankRow = true;
         if (Objects.isNull(row)) {
-            return isBlankRow;
+            return true;
         }
         int begin = row.getFirstCellNum();
         int end = row.getLastCellNum();

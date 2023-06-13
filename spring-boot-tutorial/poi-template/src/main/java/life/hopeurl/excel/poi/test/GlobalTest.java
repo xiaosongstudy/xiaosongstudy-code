@@ -39,6 +39,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -273,6 +274,53 @@ public class GlobalTest {
         style.setDataFormat(format.getFormat("#,##0.0000"));
         cell.setCellStyle(style);
         try (OutputStream fileOut = Files.newOutputStream(Paths.get(DIR + "workbook.xlsx"))) {
+            wb.write(fileOut);
+        }
+        wb.close();
+    }
+
+    /**
+     * 测试格式化金额
+     *
+     * @throws IOException
+     * @author shiping.song
+     * @date 2023/5/16 14:52
+     */
+    @Test
+    public void testFormatAmt() throws IOException {
+        Workbook wb = new XSSFWorkbook();
+        Sheet sheet = wb.createSheet("FormatAmt01");
+        CellStyle style;
+        Row row;
+        Cell cell;
+        int rowNum = 0;
+        int colNum = 0;
+        row = sheet.createRow(rowNum);
+        cell = row.createCell(colNum);
+        cell.setCellValue(new BigDecimal("9172").doubleValue());
+        style = wb.createCellStyle();
+        // 提单取色背景
+//        System.out.println(wb.getCellStyleAt(0));
+
+        style.setFillPattern(FillPatternType.NO_FILL);
+        style.setFillBackgroundColor(IndexedColors.RED1.getIndex());
+//        style.setFillForegroundColor((short) 64);
+        // 净重format
+//        style.setDataFormat(format.getFormat("0.000_"));
+        // 金额 USD
+//        style.setDataFormat(format.getFormat("[$USD] #,##0.00_);[红色]([$USD] #,##0.00)"));
+        // 金额 CNY
+//        style.setDataFormat(format.getFormat("[$CNY] #,##0.00_);[红色]([$CNY] #,##0.00)"));
+
+        cell.setCellStyle(style);
+        Cell twoCell = row.createCell(1);
+        twoCell.setCellValue(new BigDecimal("3").doubleValue());
+        twoCell.setCellStyle(style);
+
+        Cell totalCell = row.createCell(2);
+        totalCell.setCellFormula("A1*B1");
+        totalCell.setCellStyle(style);
+        try (OutputStream fileOut = Files.newOutputStream(Paths.get("F:\\xiaosongstudy-code\\spring-boot-tutorial\\poi-template\\" + "testFormatAmt.xlsx"))) {
             wb.write(fileOut);
         }
         wb.close();

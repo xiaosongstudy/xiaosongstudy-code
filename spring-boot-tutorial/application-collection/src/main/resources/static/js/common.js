@@ -1,4 +1,6 @@
-
+/**
+ * 全局通用js
+ */
 export default {
     /**
      * @param queryObj 将对象类型转化为请求参数
@@ -9,5 +11,12 @@ export default {
         } else {
             return '';
         }
+    },
+    /**
+     * 注册vue组件
+     * @param {Vue} vue 
+     */
+    registerComponents: vue => {
+        
     }
 }

@@ -1,6 +1,28 @@
 import common from "../common.js";
 import { pathToRegexp, match, parse, compile } from '../path-to-regexp/index.js';
 import { routePaths } from "./modules/index.js";
+
+
+/**
+   * 获取请求路径参数
+   * @param {string} variable 参数名称
+   * @returns 
+   */
+const getQueryVariable = variable => {
+    let query = window.location.search.substring(1);
+    let vars = query.split("&");
+    let paramObj = {}
+    for (let i = 0; i < vars.length; i++) {
+        let pair = vars[i].split("=");
+        if (variable) {
+            if (pair[0] == variable) { return pair[1]; }
+        } else {
+            paramObj[pair[0]] = pair[1];
+        }
+    }
+    return paramObj;
+}
+
 /**
  * 路由js
  */
@@ -12,13 +34,9 @@ export default {
      */
     pathVariables: path => {
         if (path && routePaths && routePaths.length > 0) {
-            let targetRoutePath = routePaths.find(routePath => {
-                console.log('123', routePath, pathToRegexp(routePath));
-                path.search(pathToRegexp(routePath)) != -1
-            })
+            let targetRoutePath = routePaths.find(routePath => { return path.search(pathToRegexp(routePath)) != -1 })
             if (targetRoutePath) {
                 let paramFinder = match(targetRoutePath, { decode: decodeURIComponent })
-                console.log(paramFinder, 'paramFinder');
                 return paramFinder(path).params
             } else {
                 throw Error('非法路由，请检查')
@@ -48,22 +66,6 @@ export default {
     }
 }
 
-/**
-   * 获取请求路径参数
-   * @param {string} variable 参数名称
-   * @returns 
-   */
-const getQueryVariable = variable => {
-    let query = window.location.search.substring(1);
-    let vars = query.split("&");
-    let paramObj = {}
-    for (let i = 0; i < vars.length; i++) {
-        let pair = vars[i].split("=");
-        if (variable) {
-            if (pair[0] == variable) { return pair[1]; }
-        } else {
-            paramObj[pair[0]] = pair[1];
-        }
-    }
-    return paramObj;
-}
+
+
+
