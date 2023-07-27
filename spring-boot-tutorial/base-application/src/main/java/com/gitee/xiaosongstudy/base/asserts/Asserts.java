@@ -7,6 +7,8 @@ import org.springframework.util.StringUtils;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * <p>
@@ -237,14 +239,51 @@ public class Asserts {
     }
 
     /**
+     * 将捕获到的异常转化为系统自带的异常
+     *
+     * @param cause   待包装异常
+     * @param message 错误信息
+     * @param model   辅助数据源
+     * @date 2023/7/27 21:19
+     */
+    public static void err(Throwable cause, String message, Map<String, String> model) {
+        throw new BusinessException(message, cause, model);
+    }
+
+    public static void err(Throwable cause, String message) {
+        err(cause, message, null);
+    }
+
+    public static void err(String message) {
+        throw new BusinessException(message);
+    }
+
+    /**
      * 执行断言操作
      *
      * @param flag    标识位 如果为true则抛出执行异常！
      * @param message 错误信息！
      */
     private static void doAssert(boolean flag, String message) {
+        doAssert(flag, message, null);
+    }
+
+    /**
+     * <p>断言flag为false，如果为真则抛出错误</p>
+     * <p>message 支持${param}这种形式的占位符，如果使用占位符则与model联动，此时model作为数据源</p>
+     *
+     * @param flag    待校验标识
+     * @param message 抛出的错误
+     * @param model   辅助数据源
+     * @date 2023/7/27 21:14
+     */
+    private static void doAssert(boolean flag, String message, Map<String, String> model) {
         if (flag) {
-            throw new BusinessException(message);
+            if (Objects.nonNull(model)) {
+                throw new BusinessException(message, model);
+            } else {
+                throw new BusinessException(message);
+            }
         }
     }
 
@@ -262,6 +301,7 @@ public class Asserts {
 
     /**
      * 断言为真
+     *
      * @param flag
      * @param message
      */

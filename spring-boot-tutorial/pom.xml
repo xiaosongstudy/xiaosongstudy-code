@@ -21,6 +21,7 @@
         <module>poi-template</module>
         <module>juc-template</module>
         <module>application-collection</module>
+        <module>service-collection</module>
     </modules>
     <packaging>pom</packaging>
 

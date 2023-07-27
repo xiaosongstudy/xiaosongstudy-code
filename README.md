@@ -50,3 +50,7 @@ hopeurl-file-center项目一起进行联调，本项目作为客户端，`hopeur
 > 3. https://cloud.tencent.com/developer/article/2123591?from=article.detail.1541199
 > 4. https://gitee.com/KT1205529635/simple-uploader
 > 5. https://blog.csdn.net/top_code/article/details/8896047?spm=1001.2101.3001.6661.1&utm_medium=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-8896047-blog-81910690.pc_relevant_default&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-8896047-blog-81910690.pc_relevant_default&utm_relevant_index=1
+
+
+## service-collection
+这个demo包含所有应用服务集合，里面会收集日常看到的、想实现的功能
