@@ -46,15 +46,7 @@ public class SimpleStopWatch {
     @Override
     public String toString() {
         String defaultLog = String.format("%s总耗时：%sms", topic, endTime - beginTime);
-        return Objects.isNull(log) || log.trim().length() == 0 ? defaultLog : log;
-    }
-
-    public long getBeginTime() {
-        return beginTime;
-    }
-
-    public long getEndTime() {
-        return endTime;
+        return Objects.isNull(log) || log.trim().isEmpty() ? defaultLog : log;
     }
 
     public SimpleStopWatch log(String log) {
