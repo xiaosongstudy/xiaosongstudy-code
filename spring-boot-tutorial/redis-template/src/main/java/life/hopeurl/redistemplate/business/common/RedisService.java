@@ -2,6 +2,7 @@ package life.hopeurl.redistemplate.business.common;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
+import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -55,13 +56,14 @@ public class RedisService {
     public boolean setNx(RedisCache redisCache) {
         String realKey = this.getRealKey(redisCache);
         Long ttl = redisCache.getTtl();
+        Boolean result;
         if (Objects.nonNull(ttl)) {
             TimeUnit timeUnit = this.mergeTimeUnit(redisCache);
-            stringRedisTemplate.opsForValue().setIfAbsent(realKey, this.mergeStringValue(redisCache.getValue()), ttl, timeUnit);
+            result = stringRedisTemplate.opsForValue().setIfAbsent(realKey, this.mergeStringValue(redisCache.getValue()), ttl, timeUnit);
         } else {
-            stringRedisTemplate.opsForValue().setIfAbsent(realKey, this.mergeStringValue(redisCache.getValue()));
+            result = stringRedisTemplate.opsForValue().setIfAbsent(realKey, this.mergeStringValue(redisCache.getValue()));
         }
-        return false;
+        return BooleanUtil.isTrue(result);
     }
 
     /**
