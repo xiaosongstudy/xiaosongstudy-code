@@ -19,7 +19,7 @@ public class Result implements Serializable {
     /**
      * 响应结果(逻辑成功或者失败)
      */
-    private Boolean flag;
+    private boolean flag;
     /**
      * 状态码
      */

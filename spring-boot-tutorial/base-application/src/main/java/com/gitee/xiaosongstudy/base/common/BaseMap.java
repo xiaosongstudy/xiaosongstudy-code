@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 /**
  * 自定义Map
+ *
  * @author hopeurl
  */
 public class BaseMap extends HashMap<String, Object> {
@@ -63,7 +64,7 @@ public class BaseMap extends HashMap<String, Object> {
     public Long getLong(String key) {
         Object v = get(key);
         if (ObjectUtil.isNotEmpty(v)) {
-            return new Long(v.toString());
+            return Long.parseLong(v.toString());
         }
         return null;
     }
@@ -79,7 +80,7 @@ public class BaseMap extends HashMap<String, Object> {
     public List<Long> getListLong(String key) {
         List<String> list = get(key);
         if (ObjectUtil.isNotEmpty(list)) {
-            return list.stream().map(e -> new Long(e)).collect(Collectors.toList());
+            return list.stream().map(Long::parseLong).collect(Collectors.toList());
         } else {
             return null;
         }
