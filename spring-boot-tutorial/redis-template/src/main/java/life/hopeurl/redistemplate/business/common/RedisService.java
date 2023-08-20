@@ -2,18 +2,24 @@ package life.hopeurl.redistemplate.business.common;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * <p>redis服务类</p>
@@ -24,6 +30,7 @@ import java.util.concurrent.TimeUnit;
  * @email 2453332538@qq.com
  */
 @Service
+@Slf4j
 public class RedisService {
 
     @Resource
@@ -44,6 +51,38 @@ public class RedisService {
         } else {
             stringRedisTemplate.opsForValue().set(realKey, this.mergeStringValue(redisCache.getValue()));
         }
+    }
+
+    /**
+     * 设置缓存，同时加上互斥锁，注意：这个方法会阻塞线程，如果无法从缓存中获取到数据将会一直等待缓存被某一个线程设置完才会释放
+     *
+     * @param redisCache 缓存辅助变量
+     * @date 2023/8/20 17:33
+     */
+    public <R, DB> R setWithLock(RedisCache redisCache, Supplier<R> cacheData, Supplier<DB> dataBase, Function<DB, R> setValueHandler) {
+        assert Objects.nonNull(cacheData) && Objects.nonNull(dataBase) && Objects.nonNull(setValueHandler);
+        R cache = cacheData.get();
+        if (Objects.isNull(cache)) {
+            // 如果没有结束则需要获取锁并生成数据，同时没有获取到的线程需要循环等待
+            RedisCache lockCache = this.getLockCache(redisCache.getBusinessPrefix(), redisCache.getBusinessPrefix());
+            boolean locked = this.setNx(lockCache);
+            if (locked) {
+                cache = cacheData.get();
+                // 这里使用经典的双空校验
+                if (Objects.isNull(cache)) {
+                    return setValueHandler.apply(dataBase.get());
+                }
+            } else {
+                // 睡眠300ms
+                try {
+                    TimeUnit.MILLISECONDS.sleep(300L);
+                    this.setWithLock(redisCache, cacheData, dataBase, setValueHandler);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return cache;
     }
 
     /**
@@ -104,6 +143,61 @@ public class RedisService {
         if (Objects.nonNull(ttl)) {
             stringRedisTemplate.expire(realKey, ttl, this.mergeTimeUnit(redisCache));
         }
+    }
+
+    /**
+     * 锁定数据，如果为true则锁定成功
+     *
+     * @param businessPrefix 业务前缀
+     * @param businessKey    业务键
+     * @return 锁定结果
+     * @date 2023/8/20 16:43
+     */
+    public boolean lock(String businessPrefix, String businessKey) {
+        return this.setNx(this.getLockCache(businessPrefix, businessKey));
+    }
+
+    /**
+     * 释放key
+     *
+     * @param businessPrefix 业务前缀
+     * @param businessKey    业务键
+     * @date 2023/8/20 16:54
+     */
+    public void unLock(String businessPrefix, String businessKey) {
+        assert StrUtil.isAllNotBlank(businessPrefix, businessKey);
+        stringRedisTemplate.delete(businessPrefix + businessKey);
+    }
+
+    /**
+     * 获取锁并进行缓存操作
+     *
+     * @param businessPrefix 业务前缀
+     * @param businessKey    业务键
+     * @param callBack       缓存处理回调
+     * @date 2023/8/20 17:08
+     */
+    public void operationWithLock(String businessPrefix, String businessKey, Consumer<Boolean> callBack) {
+        assert StrUtil.isAllNotBlank(businessPrefix, businessKey);
+        try {
+            callBack.accept(this.lock(businessPrefix, businessKey));
+        } finally {
+            this.unLock(businessPrefix, businessKey);
+        }
+    }
+
+    /**
+     * 获取加锁缓存对象
+     *
+     * @param businessPrefix 业务前缀
+     * @param businessKey    业务键
+     * @return 缓存对象
+     * @date 2023/8/20 17:17
+     */
+    private RedisCache getLockCache(String businessPrefix, String businessKey) {
+        return RedisCache.builder()
+                .businessPrefix(businessPrefix)
+                .businessKey(businessKey).value("locked:" + DateUtil.formatLocalDateTime(LocalDateTime.now())).build();
     }
 
 
