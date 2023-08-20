@@ -75,8 +75,8 @@ public class RedisService {
     public void put(RedisCache redisCache) {
         String realKey = this.getRealKey(redisCache);
         assert null != redisCache.getHashValue() && StrUtil.isNotBlank(redisCache.getHashKey());
-        Long ttl = redisCache.getTtl();
         stringRedisTemplate.opsForHash().put(realKey, redisCache.getHashKey(), this.mergeStringValue(redisCache.getHashValue()));
+        Long ttl = redisCache.getTtl();
         if (Objects.nonNull(ttl)) {
             stringRedisTemplate.expire(realKey, ttl, this.mergeTimeUnit(redisCache));
         }
@@ -99,8 +99,8 @@ public class RedisService {
                     }
                     return null;
                 }));
-        Long ttl = redisCache.getTtl();
         stringRedisTemplate.opsForHash().putAll(realKey, dataMap);
+        Long ttl = redisCache.getTtl();
         if (Objects.nonNull(ttl)) {
             stringRedisTemplate.expire(realKey, ttl, this.mergeTimeUnit(redisCache));
         }
