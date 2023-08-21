@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -41,7 +42,7 @@ public class RedisCache implements Serializable {
     /**
      * 逻辑过期时间
      */
-    private long expireTime;
+    private LocalDateTime expireTime;
 
     /**
      * 负载数据

@@ -54,36 +54,135 @@ public class RedisService {
     }
 
     /**
-     * 设置缓存，同时加上互斥锁，注意：这个方法会阻塞线程，如果无法从缓存中获取到数据将会一直等待缓存被某一个线程设置完才会释放
+     * 获取缓存
      *
      * @param redisCache 缓存辅助变量
+     * @return 缓存值
+     * @date 2023/8/21 23:10
+     */
+    public String get(RedisCache redisCache) {
+        String realKey = this.getRealKey(redisCache);
+        return stringRedisTemplate.opsForValue().get(realKey);
+    }
+
+    /**
+     * 设置缓存，同时设置逻辑过期时间
+     *
+     * @param redisCache 缓存辅助变量
+     * @date 2023/8/21 01:42
+     */
+    public void setWithLogicTime(RedisCache redisCache) {
+        String realKey = this.getRealKey(redisCache);
+        assert Objects.nonNull(redisCache.getExpireTime()) && Objects.nonNull(redisCache.getValue());
+        RedisCache data = RedisCache.builder().expireTime(redisCache.getExpireTime()).value(redisCache.getValue()).build();
+        stringRedisTemplate.opsForValue().set(realKey, this.mergeStringValue(data));
+    }
+
+    /**
+     * 设置缓存，同时加上互斥锁，注意：这个方法会阻塞线程，如果无法从缓存中获取到数据将会一直等待缓存被某一个线程设置完才会释放
+     *
+     * @param redisCache  缓存辅助变量
+     * @param expireRule  redis中的缓存是否过期
+     * @param valueMapper 根据缓存是否过期来动态处理返回值
      * @date 2023/8/20 17:33
      */
-    public <R, DB> R setWithLock(RedisCache redisCache, Supplier<R> cacheData, Supplier<DB> dataBase, Function<DB, R> setValueHandler) {
-        assert Objects.nonNull(cacheData) && Objects.nonNull(dataBase) && Objects.nonNull(setValueHandler);
-        R cache = cacheData.get();
-        if (Objects.isNull(cache)) {
+    public <R> R setWithLock(RedisCache redisCache, Supplier<Boolean> expireRule, Function<Boolean, R> valueMapper) {
+        assert Objects.nonNull(expireRule) && Objects.nonNull(valueMapper);
+        boolean expired = expireRule.get();
+        if (expired) {
             // 如果没有结束则需要获取锁并生成数据，同时没有获取到的线程需要循环等待
             RedisCache lockCache = this.getLockCache(redisCache.getBusinessPrefix(), redisCache.getBusinessPrefix());
             boolean locked = this.setNx(lockCache);
             if (locked) {
-                cache = cacheData.get();
+                expired = expireRule.get();
                 // 这里使用经典的双空校验
-                if (Objects.isNull(cache)) {
-                    return setValueHandler.apply(dataBase.get());
+                if (expired) {
+                    try {
+                        return valueMapper.apply(true);
+                    } finally {
+                        // 释放锁
+                        stringRedisTemplate.delete(this.getRealKey(lockCache));
+                    }
                 }
             } else {
                 // 睡眠300ms
                 try {
                     TimeUnit.MILLISECONDS.sleep(300L);
-                    this.setWithLock(redisCache, cacheData, dataBase, setValueHandler);
+                    this.setWithLock(redisCache, expireRule, valueMapper);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             }
         }
-        return cache;
+        return valueMapper.apply(false);
     }
+
+
+    /**
+     * <p>加锁，然后更新缓存，注意：使用本方法要确保缓存中已经提前初始化好了相对应的热点key</p>
+     * <p>本方法使用的是逻辑过期的思想来解决缓存穿透问题，因而数据具有一定的延迟性，使用本方法时要综合考虑这块对于应用的负面影响</p>
+     *
+     * @param redisCache
+     * @param valueMapper
+     * @param <R>
+     * @return
+     * @date 2023/8/21 22:21
+     */
+    public <R> R strLockThenUpdateCache(RedisCache redisCache, Function<Object, R> valueMapper, Consumer<RedisCache> cacheUpdate) {
+        RedisCache logicCacheData = this.getLogicCacheData(redisCache);
+        LocalDateTime expireTime = logicCacheData.getExpireTime();
+        if (Objects.isNull(expireTime)) {
+            this.illegalArgumentException("逻辑过期字段【expireTime】没有值，请检查");
+        } else {
+            // 如果已经过期了则需要更新
+            LocalDateTime now = LocalDateTime.now();
+            if (expireTime.isAfter(now)) {
+                // 尝试获取锁
+                RedisCache lockCache = this.getLockCache(redisCache.getBusinessPrefix(), redisCache.getBusinessPrefix());
+                boolean locked = this.setNx(lockCache);
+                if (locked) {
+                    try {
+                        // 只尝试获取一次锁，如果没获取上就不管了，直接返回旧值
+                        logicCacheData = this.getLogicCacheData(redisCache);
+                        if (redisCache.getExpireTime().isAfter(now)) {
+                            // 开启线程进行处理
+                            new Thread(() -> {
+                                // 正常执行完毕，必须释放锁
+                                try {
+                                    cacheUpdate.accept(redisCache);
+                                } finally {
+                                    stringRedisTemplate.delete(this.getRealKey(lockCache));
+                                }
+                            }).start();
+                        }
+                    } catch (Exception e) {
+                        // 如果抛出异常则先释放锁，然后再将异常重新跑出去，正常执行不释放锁
+                        stringRedisTemplate.delete(this.getRealKey(lockCache));
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }
+        return valueMapper.apply(logicCacheData.getValue());
+    }
+
+    /**
+     * 获取逻辑缓存数据
+     *
+     * @param redisCache redis缓存数据
+     * @return 缓存数据
+     * @date 2023/8/21 23:38
+     */
+    private RedisCache getLogicCacheData(RedisCache redisCache) {
+        String cache = this.get(redisCache);
+        assert StrUtil.isNotBlank(cache);
+        // 校验是否有过期时间字段
+        RedisCache cacheData = JSONUtil.toBean(cache, RedisCache.class);
+        this.illegalArgumentException(Objects.isNull(cacheData), "缓存数据不存在");
+        this.illegalArgumentException(Objects.isNull(cacheData.getExpireTime()), "逻辑过期字段【expireTime】没有值，请检查");
+        return cacheData;
+    }
+
 
     /**
      * 设置缓存，并返回设置结果，返回false时则设置失败
@@ -242,5 +341,28 @@ public class RedisService {
             value = JSONUtil.toJsonStr(data);
         }
         return value;
+    }
+
+    /**
+     * 非法参数异常
+     *
+     * @param isThrow 是否抛出异常
+     * @param message 错误信息
+     * @date 2023/8/21 23:31
+     */
+    private void illegalArgumentException(boolean isThrow, String message) {
+        if (isThrow) {
+            throw new IllegalArgumentException(message);
+        }
+    }
+
+    /**
+     * 非法参数异常
+     *
+     * @param message 异常信息
+     * @date 2023/8/21 23:21
+     */
+    private void illegalArgumentException(String message) {
+        this.illegalArgumentException(true);
     }
 }
