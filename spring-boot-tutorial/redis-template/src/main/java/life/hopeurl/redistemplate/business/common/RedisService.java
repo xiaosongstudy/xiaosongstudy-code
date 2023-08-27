@@ -6,12 +6,15 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
+import life.hopeurl.redistemplate.constant.RedisConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -32,6 +35,11 @@ import java.util.function.Supplier;
 @Service
 @Slf4j
 public class RedisService {
+
+    /**
+     * 主键开始时间
+     */
+    private static final long NEXT_LONG_ID_START = 1692919237;
 
     @Resource
     private StringRedisTemplate stringRedisTemplate;
@@ -268,6 +276,22 @@ public class RedisService {
         stringRedisTemplate.delete(businessPrefix + businessKey);
     }
 
+
+    /**
+     * redis全局自增主键
+     *
+     * @param businessKey 业务key
+     * @return 当前全局主键
+     * @date 2023/8/24 23:23
+     */
+    public long nextLongId(String businessKey) {
+        LocalDateTime now = LocalDateTime.now();
+        String realKey = RedisConstant.NEXT_LONG_KEY + now.format(DateTimeFormatter.ofPattern("yyyy:MM:dd")) + ":" + businessKey;
+        long timestamp = now.toEpochSecond(ZoneOffset.UTC) - NEXT_LONG_ID_START;
+        long increment = stringRedisTemplate.opsForValue().increment(realKey);
+        return timestamp << 32 | increment;
+    }
+
     /**
      * 获取锁并进行缓存操作
      *
@@ -363,6 +387,6 @@ public class RedisService {
      * @date 2023/8/21 23:21
      */
     private void illegalArgumentException(String message) {
-        this.illegalArgumentException(true);
+        this.illegalArgumentException(true, message);
     }
 }

@@ -32,4 +32,9 @@ public final class RedisConstant {
      * 短信验证码过期时间
      */
     public static final Long LOGIN_SMS_EXPIRE_KEY = 3L;
+
+    /**
+     * long类型的全局唯一主键
+     */
+    public static final String NEXT_LONG_KEY = "id-long:current:";
 }

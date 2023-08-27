@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
  * @author shiping.song
  * @date 2022/11/28 20:28
  */
-public class RegularExperssion {
+public class RegularExpression {
     Pattern compile = Pattern.compile("(\\))");
     public static void main(String[] args) {
 
