@@ -9,6 +9,7 @@ import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 /**
  * <p>
@@ -307,5 +308,45 @@ public class Asserts {
      */
     public static void isTure(boolean flag, String message) {
         doAssert(!flag, message);
+    }
+
+    /**
+     * 校验param是否为空值，如果为空值则抛出系统异常，如果不为空则返回原值
+     *
+     * @param param    待校验参数
+     * @param errorMsg 异常信息
+     * @param <T>      待校验参数范型
+     * @date 2023/9/6 21:16
+     */
+    public static <T> T requireNonNull(T param, String errorMsg) {
+        notNull(param, errorMsg);
+        return param;
+    }
+
+    /**
+     * 校验param是否为空值，如果为空值则抛出系统异常，如果不为空则返回原值
+     *
+     * @param paramSupplier 待校验值生成器
+     * @param errorMsg      错误信息
+     * @param <T>
+     * @return 校验后的值
+     * @date 2023/9/6 21:22
+     */
+    public static <T> T requireNonNull(Supplier<T> paramSupplier, String errorMsg) {
+        // 提前获取处理，减少可能出现的二次io操作
+        T param = paramSupplier.get();
+        notNull(param, errorMsg);
+        return param;
+    }
+
+    /**
+     * 构建系统业务异常
+     *
+     * @param message 异常信息
+     * @return 系统业务异常
+     * @date 2023/9/6 21:24
+     */
+    public BusinessException buildBizException(String message) {
+        return new BusinessException(message);
     }
 }

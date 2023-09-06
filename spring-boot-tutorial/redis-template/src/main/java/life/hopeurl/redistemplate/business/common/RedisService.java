@@ -288,7 +288,7 @@ public class RedisService {
         LocalDateTime now = LocalDateTime.now();
         String realKey = RedisConstant.NEXT_LONG_KEY + now.format(DateTimeFormatter.ofPattern("yyyy:MM:dd")) + ":" + businessKey;
         long timestamp = now.toEpochSecond(ZoneOffset.UTC) - NEXT_LONG_ID_START;
-        long increment = stringRedisTemplate.opsForValue().increment(realKey);
+        long increment = Objects.requireNonNull(stringRedisTemplate.opsForValue().increment(realKey));
         return timestamp << 32 | increment;
     }
 

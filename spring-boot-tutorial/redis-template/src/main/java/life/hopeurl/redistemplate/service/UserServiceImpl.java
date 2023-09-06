@@ -84,6 +84,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserInfo> implement
                 // 向缓存中设置缓存信息，同时设置过期时间
                 Map<String, Object> userMap = BeanUtil.beanToMap(respUserInfo, new HashMap<>(), CopyOptions
                         .create().ignoreNullValue().setFieldValueEditor((fieldName, fieldValue) -> {
+                            // setFieldValueEditor 这个处理的优先级比ignoreNullValue这个高，因此这里需要单独处理一下
                             if (Objects.nonNull(fieldValue)) {
                                 return fieldValue.toString();
                             }
