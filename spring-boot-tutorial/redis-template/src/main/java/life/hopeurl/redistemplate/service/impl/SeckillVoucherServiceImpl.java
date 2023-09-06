@@ -49,7 +49,7 @@ public class SeckillVoucherServiceImpl extends ServiceImpl<SeckillVoucherMapper,
             SeckillVoucher seckillVoucher = super.getOne(voucherWr, true);
             assert seckillVoucher != null;
             Integer stock = seckillVoucher.getStock();
-            if (stock < 0) {
+            if (stock <= 0) {
                 msg = "该优惠券已经被抢完了";
             } else {
                 // 2.1 如何控制数据不被超卖？ 加版本号字段，或者使用 CAS乐观锁(弊端是失败率高)
@@ -79,7 +79,7 @@ public class SeckillVoucherServiceImpl extends ServiceImpl<SeckillVoucherMapper,
             super.update(updateWrapper);
         }
         long end = System.currentTimeMillis();
-        log.info(String.format("time: %s, handleType: %s", (end-start), handleType));
+        log.info(String.format("time: %s, handleType: %s", (end - start), handleType));
     }
 }
 
