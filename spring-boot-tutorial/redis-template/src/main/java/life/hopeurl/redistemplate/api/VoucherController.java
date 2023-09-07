@@ -35,8 +35,7 @@ public class VoucherController {
     @PostMapping("/robVoucherByDb")
     public Result<SkillVoucherVo> robVoucherByDb(@RequestBody SkillVoucherVo skillVoucherVo) {
         Result<SkillVoucherVo> resultModel = Result.<SkillVoucherVo>builder().build();
-        if (Objects.isNull(skillVoucherVo) || Objects.isNull(skillVoucherVo.getVoucherId()) ||
-                Objects.isNull(skillVoucherVo.getUserId())) {
+        if (Objects.isNull(skillVoucherVo) || Objects.isNull(skillVoucherVo.getVoucherId())) {
             resultModel.setFlag(false);
             resultModel.setMsg("用户数据为空");
             return resultModel;

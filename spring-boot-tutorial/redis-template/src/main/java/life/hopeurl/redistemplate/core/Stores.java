@@ -14,7 +14,7 @@ public final class Stores {
     private Stores() {
     }
 
-    private static final ThreadLocal<UserInfoVo> userInfo = new ThreadLocal<>();
+    private static final ThreadLocal<UserInfoVo> userInfoStore = new ThreadLocal<>();
 
     /**
      * 设置用户信息
@@ -26,6 +26,7 @@ public final class Stores {
         assert null != userInfo;
         // 清空敏感信息
         userInfo.setPassword(null);
+        userInfoStore.set(userInfo);
     }
 
     /**
@@ -35,7 +36,7 @@ public final class Stores {
      * @date 2023/8/18 22:27
      */
     public static UserInfoVo getUserInfo() {
-        return userInfo.get();
+        return userInfoStore.get();
     }
 
     /**
@@ -44,6 +45,6 @@ public final class Stores {
      * @date 2023/8/18 22:25
      */
     public static void destroy() {
-        userInfo.remove();
+        userInfoStore.remove();
     }
 }
