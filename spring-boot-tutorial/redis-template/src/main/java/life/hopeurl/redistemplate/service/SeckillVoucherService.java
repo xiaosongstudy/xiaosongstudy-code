@@ -1,8 +1,7 @@
 package life.hopeurl.redistemplate.service;
 
-import life.hopeurl.redistemplate.core.Result;
-import life.hopeurl.redistemplate.entity.SeckillVoucher;
 import com.baomidou.mybatisplus.extension.service.IService;
+import life.hopeurl.redistemplate.entity.SeckillVoucher;
 import life.hopeurl.redistemplate.vo.SkillVoucherVo;
 
 /**
@@ -13,12 +12,22 @@ import life.hopeurl.redistemplate.vo.SkillVoucherVo;
 public interface SeckillVoucherService extends IService<SeckillVoucher> {
 
     /**
+     * 通过voucherId查询抢票券信息
+     *
+     * @param voucherId 优惠券编号
+     * @date 2023/9/9 09:38
+     */
+    SeckillVoucher queryByVoucherId(Long voucherId);
+
+    /**
      * 抢优惠券-基于纯数据库版实现
      *
-     * @param resultModel    响应数据模型
      * @param skillVoucherVo 请求数据
-     * @return
      * @date 2023/9/7 00:16
      */
-    Result<SkillVoucherVo> robVoucherByDb(Result<SkillVoucherVo> resultModel, SkillVoucherVo skillVoucherVo);
+    void robVoucherByDbFirst(SkillVoucherVo skillVoucherVo);
+
+    void robVoucherByDbSynchronize(SkillVoucherVo skillVoucherVo);
+
+
 }

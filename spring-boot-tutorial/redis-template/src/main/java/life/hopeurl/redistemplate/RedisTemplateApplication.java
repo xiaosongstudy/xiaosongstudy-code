@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 @MapperScan("life.hopeurl.redistemplate.mapper")
+//@EnableAspectJAutoProxy
 public class RedisTemplateApplication {
 
 	public static void main(String[] args) {

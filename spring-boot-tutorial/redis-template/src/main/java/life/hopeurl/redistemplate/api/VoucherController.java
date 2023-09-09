@@ -1,6 +1,7 @@
 package life.hopeurl.redistemplate.api;
 
-import life.hopeurl.redistemplate.core.Result;
+import com.gitee.xiaosongstudy.base.asserts.Asserts;
+import com.gitee.xiaosongstudy.base.core.Result;
 import life.hopeurl.redistemplate.service.SeckillVoucherService;
 import life.hopeurl.redistemplate.vo.SkillVoucherVo;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.Objects;
 
 /**
  * 优惠券控制器
@@ -33,13 +33,10 @@ public class VoucherController {
      * @date 2023/9/7 00:10
      */
     @PostMapping("/robVoucherByDb")
-    public Result<SkillVoucherVo> robVoucherByDb(@RequestBody SkillVoucherVo skillVoucherVo) {
-        Result<SkillVoucherVo> resultModel = Result.<SkillVoucherVo>builder().build();
-        if (Objects.isNull(skillVoucherVo) || Objects.isNull(skillVoucherVo.getVoucherId())) {
-            resultModel.setFlag(false);
-            resultModel.setMsg("用户数据为空");
-            return resultModel;
-        }
-        return seckillVoucherService.robVoucherByDb(resultModel, skillVoucherVo);
+    public Result robVoucherByDb(@RequestBody SkillVoucherVo skillVoucherVo) {
+        Asserts.notNull(skillVoucherVo, "优惠券信息不为空");
+        Asserts.notNull(skillVoucherVo.getVoucherId(), "待抢优惠券为空");
+        seckillVoucherService.robVoucherByDbFirst(skillVoucherVo);
+        return Result.success("抢券成功");
     }
 }

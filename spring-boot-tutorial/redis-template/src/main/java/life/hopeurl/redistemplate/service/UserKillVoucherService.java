@@ -10,4 +10,13 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface UserKillVoucherService extends IService<UserKillVoucher> {
 
+
+    /**
+     * 保存用户优惠券信息
+     *
+     * @param voucherId 优惠券编号
+     * @date 2023/9/9 09:51
+     */
+    void saveVoucher(Long voucherId);
+
 }

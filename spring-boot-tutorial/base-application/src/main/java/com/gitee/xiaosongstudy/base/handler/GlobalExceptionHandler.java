@@ -71,6 +71,6 @@ public class GlobalExceptionHandler {
     public Result exceptionHandler(Exception e) {
         String errorMsg = ExceptionUtil.getMessage(e);
         log.error(errorMsg);
-        return Result.failure(e.getMessage());
+        return Result.failure(errorMsg);
     }
 }

@@ -289,7 +289,7 @@ public class Asserts {
     }
 
     /**
-     * 字符串1和字符串2相等
+     * 字符串1和字符串2相等，第一个参数请尽量使用一定不为空的值
      *
      * @param strOne
      * @param StrTwo
@@ -298,6 +298,18 @@ public class Asserts {
     public static void eq(String strOne, String StrTwo, String message) {
         boolean flag = StringUtils.hasText(strOne) && StringUtils.hasText(StrTwo) && strOne.equals(StrTwo);
         doAssert(!flag, message);
+    }
+
+    /**
+     * 断言第一个数值和第二个数值不相等
+     *
+     * @param one     第一个数值
+     * @param two     第二个数值
+     * @param message 错误提示信息
+     * @date 2023/9/9 09:34
+     */
+    public static void ne(Integer one, Integer two, String message) {
+        doAssert(one.equals(two), message);
     }
 
     /**
